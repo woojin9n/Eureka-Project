@@ -1,13 +1,10 @@
 import streamlit as st
 import openai
 import os
-from dotenv import load_dotenv
 from langchain.document_loaders import PyPDFDirectoryLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import Chroma
-
-load_dotenv()
 
 # Set up PDF files
 loader = PyPDFDirectoryLoader("./data/")
