@@ -1,43 +1,34 @@
-import streamlit as st
-import openai
-from langchain.document_loaders import PyPDFDirectoryLoader
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.vectorstores import Chroma
+import os
+import fitz  # PyMuPDF
 
-# Set up PDF files
-loader = PyPDFDirectoryLoader("./data/")
+def extract_text_from_pdf(pdf_path):
+    """Extract text from a single PDF file."""
+    with fitz.open(pdf_path) as doc:
+        text = ""
+        for page in doc:
+            text += page.get_text()
+    return text
 
-# Load the document, split it into chunks
-raw_documents = loader.load()
-text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-documents = text_splitter.split_documents(raw_documents)
+def create_chroma_vector_store(pdf_directory, limit=20):
+    """Create a chroma vector store with text from PDF files."""
+    chroma_vector_store = []
+    for entry in os.scandir(pdf_directory):
+        if entry.is_file() and entry.name.endswith('.pdf'):
+            pdf_text = extract_text_from_pdf(entry.path)
+            chroma_vector_store.append(pdf_text)
+            if len(chroma_vector_store) >= limit:
+                break  # Stop if we have reached the limit
+    return chroma_vector_store
 
-# embed each chunk and load it into the vector store.
-db = Chroma.from_documents(documents, OpenAIEmbeddings(openai_api_key='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'))
+# Specify the directory where your PDF files are located
+pdf_directory = './data/'
 
-# Set up OpenAI API Key
-openai.api_key = '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'
-def get_response(prompt):
-    """Function to get a response from GPT-4 using OpenAI API."""
-    response = openai.Completion.create(
-      model="gpt-4",
-      prompt=prompt,
-      max_tokens=150
-    )
-    message = response.choices[0].text.strip()
-    return message
+# Create the chroma vector store
+chroma_store = create_chroma_vector_store(pdf_directory)
 
-# Streamlit UI
-st.title('ChatGPT based on Chroma Vector Store')
-st.write('Type your question related to the documents in Chroma Vector Store and get an answer.')
+# Save each document to a separate text file
+for idx, document_text in enumerate(chroma_store):
+    with open(f'document_{idx+1}.txt', 'w', encoding='utf-8') as f:
+        f.write(document_text)
 
-# Input text box for user to ask questions
-user_input = st.text_input('Ask a question:')
-
-if user_input:
-    # TODO: You might want to preprocess or append context from your vector store
-    # to the user input before passing to the GPT model.
-    
-    response = get_response(user_input)
-    st.write('Response:', response)
+print(f"Chroma vector store saved with {len(chroma_store)} documents.")
