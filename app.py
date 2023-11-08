@@ -15,7 +15,7 @@ text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 documents = text_splitter.split_documents(raw_documents)
 
 # embed each chunk and load it into the vector store.
-embeddings = OpenAIEmbeddings(openai_api_key=os.getenv('OPENAI_API_KEY')))
+embeddings = OpenAIEmbeddings(openai_api_key=os.getenv('OPENAI_API_KEY'))
 db = Chroma.from_documents(documents, embeddings)
 
 # Set up OpenAI API Key
