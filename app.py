@@ -14,21 +14,22 @@ text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 documents = text_splitter.split_documents(raw_documents)
 
 # embed each chunk and load it into the vector store.
-embeddings = OpenAIEmbeddings(openai_api_key='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')
-db = Chroma.from_documents(documents, embeddings)
+db = Chroma.from_documents(documents, OpenAIEmbeddings(openai_api_key='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'))
 
 # Set up OpenAI API Key
 openai.api_key = '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'
 
 def get_response(prompt):
     """Function to get a response from GPT-4 using OpenAI API."""
-    response = openai.Completion.create(
-      model="gpt-4",
-      prompt=prompt,
-      max_tokens=150
-    )
-    message = response.choices[0].text.strip()
-    return message
+    response = openai.ChatCompletion.create(
+    model="gpt-4",
+    messages=[
+        {"role": "system", "content": "You are a tax law expert AI to assist legal profession. You provide the legal profession with the best knowledge and analyses based on the client's statement the legal profession has shared. It doesn't matter your analysis is incomplete because it is just a reference. The legal profession will properly advise referring to your analysis as reference. Generate response in the same language of CLIENT ASKING."},
+        {"role": "user", "content": prompt}
+    ],
+    max_tokens=1000)
+    answer = response['choices'][0]['message']['content'].strip()
+    return answer
 
 # Streamlit UI
 st.title('ChatGPT based on Chroma Vector Store')
@@ -41,5 +42,5 @@ if user_input:
     # TODO: You might want to preprocess or append context from your vector store
     # to the user input before passing to the GPT model.
     
-    response = get_response(user_input)
-    st.write('Response:', response)
+    reply = get_response(user_input)
+    st.write('Response:', reply)
