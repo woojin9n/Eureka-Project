@@ -35,8 +35,8 @@ def get_response(prompt):
     return answer
 
 # Streamlit UI
-st.title('ChatGPT based on Chroma Vector Store')
-st.write('Type your question related to the documents in Chroma Vector Store and get an answer.')
+st.title('ChatGPT based on Tax Law')
+st.write('Type your question related to the Tax Law and get an answer.')
 
 # Input text box for user to ask questions
 user_input = st.text_input('Ask a question:')
