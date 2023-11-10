@@ -18,15 +18,15 @@ text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 documents = text_splitter.split_documents(raw_documents)
 
 # embed each chunk and load it into the vector store.
-db = Chroma.from_documents(documents, OpenAIEmbeddings(openai_api_key=os.environ.get("OPENAI_API_KEY")))
+db = Chroma.from_documents(documents, OpenAIEmbeddings(openai_api_key=os.getenv("OPENAI_API_KEY")))
 
 # Set up OpenAI API Key
-openai.api_key = os.environ.get("OPENAI_API_KEY")
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def get_response(prompt):
     """Function to get a response from GPT-4 using OpenAI API."""
     from openai import OpenAI
-    client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     response = client.chat.completions.create(
         model="gpt-4",
         messages=[
