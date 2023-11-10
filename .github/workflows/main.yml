@@ -1,0 +1,10 @@
+jobs:
+  key-settings:
+    name: Set Up OpenAI API key
+    runs-on: windows-latest
+    steps:
+      - name: access to secrets
+        run: |
+          echo "OPENAI_API_KEY=$OPENAI_API_KEY" > .env
+        env:
+          OPENAI_API_KEY: ${{secrets.OPENAI_API_KEY}}
