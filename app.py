@@ -35,9 +35,7 @@ def get_response(prompt):
         max_tokens=1000
     )
     
-    # Accessing the response data directly, assuming the 'response' object has the necessary method/attribute
-    answer = response
-    return answer
+    return response
 
 # Streamlit UI
 st.title('ChatGPT based on Tax Law')
