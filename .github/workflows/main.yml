@@ -1,8 +1,0 @@
-jobs:
-  release-windows-app:
-    name: Build and release Windows app
-    runs-on: windows-latest
-    steps:
-      - name: access to secrets
-        run: |
-          echo "OPENAI_API_KEY=${{secrets.OPENAI_API_KEY}}" >> $Env:GITHUB_ENV
