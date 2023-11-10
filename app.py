@@ -31,7 +31,7 @@ def get_response(prompt):
         {"role": "user", "content": prompt}
     ],
     max_tokens=1000)
-    answer = response['choices'][0]['message']['content']
+    answer = response
     return answer
 
 # Streamlit UI
