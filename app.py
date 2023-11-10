@@ -22,6 +22,7 @@ db = Chroma.from_documents(documents, OpenAIEmbeddings(openai_api_key=os.getenv(
 
 # Set up OpenAI API Key
 openai.api_key = os.getenv("OPENAI_API_KEY")
+
 def get_response(prompt):
     """Function to get a response from GPT-4 using OpenAI API."""
     from openai import OpenAI
@@ -33,8 +34,7 @@ def get_response(prompt):
             {"role": "user", "content": prompt}
         ],
         max_tokens=1000
-    )
-    
+    )    
     return response
 
 # Streamlit UI
