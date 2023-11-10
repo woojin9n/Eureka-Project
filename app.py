@@ -4,6 +4,7 @@ sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 import streamlit as st
 import openai
+import os
 from langchain.document_loaders import PyPDFDirectoryLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
@@ -17,15 +18,14 @@ text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 documents = text_splitter.split_documents(raw_documents)
 
 # embed each chunk and load it into the vector store.
-db = Chroma.from_documents(documents, OpenAIEmbeddings(openai_api_key='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'))
+db = Chroma.from_documents(documents, OpenAIEmbeddings(openai_api_key=os.getenv("OPENAI_API_KEY")))
 
 # Set up OpenAI API Key
-openai.api_key = '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'
-
+openai.api_key = os.getenv("OPENAI_API_KEY")
 def get_response(prompt):
     """Function to get a response from GPT-4 using OpenAI API."""
     from openai import OpenAI
-    client = OpenAI(api_key='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')
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     response = client.chat.completions.create(
         model="gpt-4",
         messages=[
