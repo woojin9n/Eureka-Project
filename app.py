@@ -36,7 +36,7 @@ def get_response(prompt):
     )
     
     # Accessing the response data directly, assuming the 'response' object has the necessary method/attribute
-    answer = response['choices'][0]['message']['content']
+    answer = response
     return answer
 
 # Streamlit UI
