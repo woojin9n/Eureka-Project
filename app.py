@@ -25,7 +25,7 @@ openai.api_key = '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'
 def get_response(prompt):
     """Function to get a response from GPT-4 using OpenAI API."""
     from openai import OpenAI
-    client = OpenAI()
+    client = OpenAI(api_key='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')
     response = client.chat.completions.create(
         model="gpt-4",
         messages=[
