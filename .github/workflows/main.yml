@@ -21,6 +21,6 @@ jobs:
 
     - name: Run Python Script
       env:
-        OPENAI_API_KEY: ${{ secrets.env }}
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       run: |
         app.py
