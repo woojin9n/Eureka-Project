@@ -11,7 +11,7 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import Chroma
 
 # Set up OpenAI API Key
-your_openai_api_key = os.getenv("OPENAI_API_KEY")
+my_openai_api_key = os.getenv("OPENAI_API_KEY")
 
 # Set up PDF files
 loader = PyPDFDirectoryLoader("./data/")
@@ -22,11 +22,11 @@ text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 documents = text_splitter.split_documents(raw_documents)
 
 # embed each chunk and load it into the vector store.
-db = Chroma.from_documents(documents, OpenAIEmbeddings(openai_api_key=your_openai_api_key))
+db = Chroma.from_documents(documents, OpenAIEmbeddings(openai_api_key=my_openai_api_key))
 
 def get_response(prompt):
     """Function to get a response from GPT-4 using OpenAI API."""
-    client = OpenAI(api_key=your_openai_api_key)
+    client = OpenAI(api_key=my_openai_api_key)
     response = client.chat.completions.create(
         model="gpt-4",
         messages=[
