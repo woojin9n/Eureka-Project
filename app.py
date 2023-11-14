@@ -7,7 +7,9 @@ import os
 import streamlit as st
 import openai
 from langchain.document_loaders import PyPDFDirectoryLoader
+from langchain.document_loaders import JSONLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import Chroma
 
 # Set up OpenAI API Key
@@ -17,17 +19,35 @@ your_openai_api_key = os.getenv("OPENAI_API_KEY")
 pdf_directory = "./data/"
 metadata_directory = "./metadata/"
 
-# Load Metadata
-metadata_documents = []
-for filename in os.listdir(metadata_directory):
-    if filename.endswith('.json'):
-        with open(os.path.join(metadata_directory, filename), 'r', encoding='utf-8') as f:
-            doc_data = json.load(f)
-            # Assuming 'text_content' is the key where the actual text is stored in your JSON file
-            metadata_documents.append(page_content="text", metadata=doc_data['chapters'])
+# Function to load JSON files from a directory
+def load_json_directory(directory_path):
+    raw_documents = []
+    for filename in os.listdir(directory_path):
+        if filename.endswith('.json'):
+            with open(os.path.join(directory_path, filename), 'r') as file:
+                json_data = json.load(file)
+                # Extract text from JSON data here
+                # This depends on the structure of your JSON files
+                text = extract_text_from_json(json_data)
+                raw_documents.append(text)
+    return raw_documents
 
-# Embed metadata and load it into the vector store
-db = Chroma.from_documents(metadata_documents, OpenAIEmbeddings(openai_api_key=your_openai_api_key))
+# Function to extract text from JSON data
+def extract_text_from_json(json_data):
+    # Implement based on your JSON structure
+    # For example:
+    text = json_data['chapters']  # Replace 'text_field' with the actual key
+    return text
+
+# Load JSON documents
+raw_documents = load_json_directory(metadata_directory)
+
+# Split the text into chunks
+text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+documents = text_splitter.split_documents(raw_documents)
+
+# Embed each chunk and load it into the vector store
+db = Chroma.from_documents(documents, OpenAIEmbeddings(openai_api_key=your_openai_api_key))
 
 def get_response(prompt):
     # Function to get a response from GPT-4 using OpenAI API.
