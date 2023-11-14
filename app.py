@@ -41,7 +41,7 @@ metadata_directory = "./metadata/"
 
 # Load JSON documents
 loader = DirectoryLoader(metadata_directory, glob="**/*.json")
-raw_documents = loader.load
+raw_documents = loader.load()
 
 # Split the text into chunks
 text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
