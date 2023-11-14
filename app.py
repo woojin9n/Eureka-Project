@@ -17,12 +17,6 @@ your_openai_api_key = os.getenv("OPENAI_API_KEY")
 pdf_directory = "./data/"
 metadata_directory = "./metadata/"
 
-class Document:
-    def __init__(self, name, page_content, metadata=None):
-        self.name = name
-        self.page_content = page_content
-        self.metadata = metadata if metadata is not None else {}
-
 # Load Metadata
 metadata_documents = []
 for filename in os.listdir(metadata_directory):
@@ -45,14 +39,6 @@ def get_response(prompt):
         max_tokens=1000
     )    
     return response['choices'][0]['message']['content']
-
-# Function to generate embeddings using OpenAI
-def get_embeddings(text):
-    response = openai.embeddings.create(
-        model="text-embeddings-ada-002",
-        input=[text]
-    )
-    return response['data'][0]['embedding']
 
 # Streamlit UI
 st.title('ChatGPT based on Tax Law')
