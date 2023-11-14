@@ -19,6 +19,13 @@ your_openai_api_key = os.getenv("OPENAI_API_KEY")
 pdf_directory = "./data/"
 metadata_directory = "./metadata/"
 
+# Function to extract text from JSON data
+def extract_text_from_json(json_data):
+    # Implement based on your JSON structure
+    # For example:
+    text = json_data['chapters']  # Replace 'text_field' with the actual key
+    return text
+
 # Function to load JSON files from a directory
 def load_json_directory(directory_path):
     raw_documents = []
@@ -31,13 +38,6 @@ def load_json_directory(directory_path):
                 text = extract_text_from_json(json_data)
                 raw_documents.append(text)
     return raw_documents
-
-# Function to extract text from JSON data
-def extract_text_from_json(json_data):
-    # Implement based on your JSON structure
-    # For example:
-    text = json_data['chapters']  # Replace 'text_field' with the actual key
-    return text
 
 # Load JSON documents
 raw_documents = load_json_directory(metadata_directory)
