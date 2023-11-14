@@ -45,8 +45,8 @@ for filename in os.listdir(metadata_directory):
              with open(os.path.join(metadata_directory, filename), 'r') as file:
                   loader = JSONLoader(
                        file_path=file,
-                       jq_schema=.chapters[].text,
-                       text_content=True
+                       jq_schema='.chapters[]',
+                       text_content=False
                   )
                   raw_documents = loader.load()
 
