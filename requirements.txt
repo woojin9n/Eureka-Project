@@ -4,3 +4,4 @@ pypdf
 chromadb
 pysqlite3-binary
 tiktoken
+unstructured
