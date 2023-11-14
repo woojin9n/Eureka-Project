@@ -17,14 +17,19 @@ your_openai_api_key = os.getenv("OPENAI_API_KEY")
 pdf_directory = "./data/"
 metadata_directory = "./metadata/"
 
+class Document:
+    def __init__(self, name, page_content):
+        self.name = name
+        self.page_content = page_content
+
 # Load Metadata
 metadata_documents = []
 for filename in os.listdir(metadata_directory):
     if filename.endswith('.json'):
         with open(os.path.join(metadata_directory, filename), 'r') as f:
             doc_data = json.load(f)
-            # Ensure each document has a 'page_content' key with text content
-            metadata_documents.append({"name": filename, "page_content": json.dumps(doc_data)})
+            document = Document(name=filename, page_content=json.dumps(doc_data))
+            metadata_documents.append(document)
 
 # Embed metadata and load it into the vector store
 db = Chroma.from_documents(metadata_documents, OpenAIEmbeddings(openai_api_key=your_openai_api_key))
