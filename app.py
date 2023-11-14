@@ -55,7 +55,7 @@ text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 documents = text_splitter.split_documents(raw_documents)
 
 # Embed each chunk and load it into the vector store
-db = Chroma.from_documents(documents, OpenAIEmbeddings(openai_api_key=your_openai_api_key, model='gpt-4'))
+db = Chroma.from_documents(documents, OpenAIEmbeddings(openai_api_key=your_openai_api_key, model='text-embedding-ada-003'))
 
 def get_response(prompt):
     # Function to get a response from GPT-4 using OpenAI API.
