@@ -41,14 +41,14 @@ metadata_directory = "./metadata/"
 
 # Load JSON documents
 for filename in os.listdir(metadata_directory):
-         if filename.endswith('.json'):
-             with open(os.path.join(metadata_directory, filename), 'r', encoding='utf-8') as f:
-                  loader = JSONLoader(
-                       file_path=str(f),
-                       jq_schema='.chapters[]',
-                       text_content=True
-                  )
-                  raw_documents = loader.load()
+    if filename.endswith('.json'):
+        metadata_path = os.path.join(metadata_directory, filename)
+        loader = JSONLoader(
+            file_path=metadata_path,
+            jq_schema='.chapters[]',
+            text_content=True
+        )
+        raw_documents = loader.load()
 
 # Split the text into chunks
 text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
