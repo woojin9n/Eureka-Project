@@ -70,7 +70,7 @@ def get_response(prompt):
     return response['choices'][0]['message']['content']
 
 # Function to generate embeddings using OpenAI
- def get_embeddings(text):
+def get_embeddings(text):
      response = openai.embeddings.create(
          model="text-embeddings-ada-002",
          input=[text]
