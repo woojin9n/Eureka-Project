@@ -48,9 +48,20 @@ st.write('Type your question related to the Tax Law and get an answer.')
 # Input text box for user to ask questions
 user_input = st.text_input('Ask a question:')
 
+# Function to generate embeddings using OpenAI
+def get_embeddings(text):
+    response = openai.embeddings.create(
+        model="text-embeddings-ada-002",
+        input=[text]
+    )
+    return response['data'][0]['embedding']
+
 if user_input:
-    # Search in metadata
-    results = db.search(user_input, num_results=1)
+    # Generate embeddings for the user's query
+    query_embeddings = get_embeddings(user_input)
+
+    # Search in the Chroma database using embeddings
+    results = db.search_by_embedding(query_embeddings, num_results=1)
     if results:
         relevant_document_name = results[0]['document']['name'].replace('.json', '.pdf')
         loader = PyPDFDirectoryLoader(pdf_directory)
