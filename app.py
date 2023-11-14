@@ -18,9 +18,10 @@ pdf_directory = "./data/"
 metadata_directory = "./metadata/"
 
 class Document:
-    def __init__(self, name, page_content):
+    def __init__(self, name, page_content, metadata=None):
         self.name = name
         self.page_content = page_content
+        self.metadata = metadata if metadata is not None else {}
 
 # Load Metadata
 metadata_documents = []
@@ -28,7 +29,8 @@ for filename in os.listdir(metadata_directory):
     if filename.endswith('.json'):
         with open(os.path.join(metadata_directory, filename), 'r') as f:
             doc_data = json.load(f)
-            document = Document(name=filename, page_content=json.dumps(doc_data))
+            # Use filename or any other relevant information as metadata
+            document = Document(name=filename, page_content=json.dumps(doc_data), metadata={"filename": filename})
             metadata_documents.append(document)
 
 # Embed metadata and load it into the vector store
