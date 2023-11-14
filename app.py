@@ -68,6 +68,12 @@ if user_input:
         loader = PyPDFDirectoryLoader(pdf_directory)
         pdf_data = loader.load_document(relevant_document_name)
 
+        # Inspect and process the PDF data
+        if isinstance(pdf_data, dict):
+            # TODO: Extract and process the content from pdf_data
+            # Example: pdf_content = pdf_data['some_key']
+            # st.write(pdf_content)
+            pass
         # TODO: Process the PDF data as needed
         
         # Get response from GPT
