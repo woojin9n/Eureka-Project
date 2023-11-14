@@ -44,8 +44,8 @@ for filename in os.listdir(metadata_directory):
          if filename.endswith('.json'):
              with open(os.path.join(metadata_directory, filename), 'r') as file:
                   loader = JSONLoader(
-                       file_path=file
-                       jq_schema=.chapters[].text
+                       file_path=file,
+                       jq_schema=.chapters[].text,
                        text_content=True
                   )
                   raw_documents = loader.load()
