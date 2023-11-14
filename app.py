@@ -72,7 +72,7 @@ def get_response(prompt):
 # Function to generate embeddings using OpenAI
 def get_embeddings(text):
      response = openai.embeddings.create(
-         model="text-embeddings-ada-002",
+         model="text-similarity-babbage-001",
          input=[text]
      )
      return response['data'][0]['embedding']
