@@ -23,7 +23,8 @@ for filename in os.listdir(metadata_directory):
     if filename.endswith('.json'):
         with open(os.path.join(metadata_directory, filename), 'r', encoding='utf-8') as f:
             doc_data = json.load(f)
-            metadata_documents.append({"name": filename, "text": json.dumps(doc_data)})
+            # Assuming 'text_content' is the key where the actual text is stored in your JSON file
+            metadata_documents.append({"page_content": doc_data['chapters']})
 
 # Embed metadata and load it into the vector store
 db = Chroma.from_documents(metadata_documents, OpenAIEmbeddings(openai_api_key=your_openai_api_key))
