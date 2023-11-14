@@ -68,7 +68,14 @@ if user_input:
         loader = PyPDFDirectoryLoader(pdf_directory)
         pdf_data = loader.load_document(relevant_document_name)
         
-        # TODO: Process the PDF data as needed
+        # Process the PDF data
+        if isinstance(pdf_data, dict) and 'text' in pdf_data:
+            pdf_content_json = pdf_data['text']
+            try:
+                pdf_content = json.loads(pdf_content_json)
+                # TODO: Further process or display pdf_content as needed
+            except json.JSONDecodeError:
+                st.write("Error decoding PDF content from JSON.")
         
         # Get response from GPT
         reply = get_response(user_input)
