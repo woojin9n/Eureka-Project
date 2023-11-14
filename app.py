@@ -8,46 +8,29 @@ import streamlit as st
 from openai import OpenAI
 from langchain.document_loaders import PyPDFDirectoryLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import Chroma
 
 # Set up OpenAI API Key
-my_openai_api_key = os.getenv("OPENAI_API_KEY")
+your_openai_api_key = os.getenv("OPENAI_API_KEY")
 
-# Set up PDF files and metadata loading
+# Set up directories for PDF files and metadata
 pdf_directory = "./data/"
-loader = PyPDFDirectoryLoader(pdf_directory)
-raw_documents = loader.load()
+metadata_directory = "./metadata/"
 
 # Load Metadata
-metadata = {}
-for filename in os.listdir(pdf_directory):
+metadata_documents = []
+for filename in os.listdir(metadata_directory):
     if filename.endswith('.json'):
-        with open(os.path.join(pdf_directory, filename), 'r') as f:
-            file_key = filename.replace('.json', '.pdf')
-            metadata[file_key] = json.load(f)
+        with open(os.path.join(metadata_directory, filename), 'r') as f:
+            doc_data = json.load(f)
+            metadata_documents.append({"name": filename, "text": json.dumps(doc_data)})
 
-# Text Splitter
-text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-
-# Process documents and attach metadata
-documents = []
-for doc in raw_documents:
-    doc_metadata = metadata.get(doc['name'])
-    chunks = text_splitter.split_text(doc['text'])
-    for chunk in chunks:
-        chunk['metadata'] = doc_metadata
-        documents.append(chunk)
-
-# Embed each chunk and load it into the Chroma database
-db = Chroma.from_documents(documents, OpenAIEmbeddings(openai_api_key=my_openai_api_key))
-
-# ... Rest of the Streamlit and OpenAI API code ...
-
+# Embed metadata and load it into the vector store
+db = Chroma.from_documents(metadata_documents, OpenAIEmbeddings(openai_api_key=your_openai_api_key))
 
 def get_response(prompt):
-    """Function to get a response from GPT-4 using OpenAI API."""
-    client = OpenAI(api_key=my_openai_api_key)
+    # Function to get a response from GPT-4 using OpenAI API.
+    client = OpenAI(api_key=your_openai_api_key)
     response = client.chat.completions.create(
         model="gpt-4",
         messages=[
@@ -66,8 +49,17 @@ st.write('Type your question related to the Tax Law and get an answer.')
 user_input = st.text_input('Ask a question:')
 
 if user_input:
-    # TODO: You might want to preprocess or append context from your vector store
-    # to the user input before passing to the GPT model.
-    
-    reply = get_response(user_input)
-    st.write('Response:', reply)
+    # Search in metadata
+    results = db.search(user_input, num_results=1)
+    if results:
+        relevant_document_name = results[0]['document']['name'].replace('.json', '.pdf')
+        loader = PyPDFDirectoryLoader(pdf_directory)
+        pdf_data = loader.load_document(relevant_document_name)
+
+        # TODO: Process the PDF data as needed
+        
+        # Get response from GPT
+        reply = get_response(user_input)
+        st.write('Response:', reply)
+    else:
+        st.write('No relevant documents found.')
