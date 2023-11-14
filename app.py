@@ -42,7 +42,7 @@ metadata_directory = "./metadata/"
 # Load JSON documents
 for filename in os.listdir(metadata_directory):
          if filename.endswith('.json'):
-             with open(os.path.join(metadata_directory, filename), 'r') as f:
+             with open(os.path.join(metadata_directory, filename), 'r', encoding='utf-8') as f:
                   loader = JSONLoader(
                        file_path=str(f),
                        jq_schema='.chapters[]',
