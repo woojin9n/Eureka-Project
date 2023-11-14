@@ -70,8 +70,6 @@ if user_input:
         loader = PyPDFDirectoryLoader(pdf_directory)
         pdf_data = loader.load_document(relevant_document_name)
 
-        print(pdf_data)
-
         # TODO: Process the PDF data as needed
         
         # Get response from GPT
