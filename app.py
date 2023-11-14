@@ -2,9 +2,10 @@ __import__('pysqlite3')
 import sys
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
+import json
+import os
 import streamlit as st
 from openai import OpenAI
-import os
 from langchain.document_loaders import PyPDFDirectoryLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
@@ -13,16 +14,36 @@ from langchain.vectorstores import Chroma
 # Set up OpenAI API Key
 my_openai_api_key = os.getenv("OPENAI_API_KEY")
 
-# Set up PDF files
-loader = PyPDFDirectoryLoader("./data/")
-
-# Load the document, split it into chunks
+# Set up PDF files and metadata loading
+pdf_directory = "./data/"
+loader = PyPDFDirectoryLoader(pdf_directory)
 raw_documents = loader.load()
-text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-documents = text_splitter.split_documents(raw_documents)
 
-# embed each chunk and load it into the vector store.
+# Load Metadata
+metadata = {}
+for filename in os.listdir(pdf_directory):
+    if filename.endswith('.json'):
+        with open(os.path.join(pdf_directory, filename), 'r') as f:
+            file_key = filename.replace('.json', '.pdf')
+            metadata[file_key] = json.load(f)
+
+# Text Splitter
+text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+
+# Process documents and attach metadata
+documents = []
+for doc in raw_documents:
+    doc_metadata = metadata.get(doc['name'])
+    chunks = text_splitter.split_text(doc['text'])
+    for chunk in chunks:
+        chunk['metadata'] = doc_metadata
+        documents.append(chunk)
+
+# Embed each chunk and load it into the Chroma database
 db = Chroma.from_documents(documents, OpenAIEmbeddings(openai_api_key=my_openai_api_key))
+
+# ... Rest of the Streamlit and OpenAI API code ...
+
 
 def get_response(prompt):
     """Function to get a response from GPT-4 using OpenAI API."""
