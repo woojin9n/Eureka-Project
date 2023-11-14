@@ -7,7 +7,7 @@ import os
 import streamlit as st
 import openai
 from langchain.document_loaders import PyPDFDirectoryLoader
-from langchain.document_loaders import DirectoryLoader
+from langchain.document_loaders import JSONLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import Chroma
@@ -40,8 +40,15 @@ metadata_directory = "./metadata/"
 #     return raw_documents
 
 # Load JSON documents
-loader = DirectoryLoader(metadata_directory, glob="**/*.json")
-raw_documents = loader.load()
+for filename in os.listdir(metadata_directory):
+         if filename.endswith('.json'):
+             with open(os.path.join(metadata_directory, filename), 'r') as metafile:
+                  loader = JSONLoader(
+                       file_path=metafile
+                       jq_schema=.chapters[].text
+                       text_content=True
+                  )
+                  raw_documents = loader.load()
 
 # Split the text into chunks
 text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
