@@ -40,15 +40,6 @@ def get_response(prompt):
     )    
     return response['choices'][0]['message']['content']
 
-# Streamlit UI
-st.title('ChatGPT based on Tax Law')
-st.write('Type your question related to the Tax Law and get an answer.')
-
-# Input text box for user to ask questions
-user_input = st.text_input('Ask a question:')
-
-# ... Previous code ...
-
 # Function to generate embeddings using OpenAI
 def get_embeddings(text):
     response = openai.embeddings.create(
@@ -56,6 +47,13 @@ def get_embeddings(text):
         input=[text]
     )
     return response['data'][0]['embedding']
+
+# Streamlit UI
+st.title('ChatGPT based on Tax Law')
+st.write('Type your question related to the Tax Law and get an answer.')
+
+# Input text box for user to ask questions
+user_input = st.text_input('Ask a question:')
 
 if user_input:
     # Generate embeddings for the user's query
@@ -82,5 +80,3 @@ if user_input:
         st.write('Response:', reply)
     else:
         st.write('No relevant documents found.')
-
-# ... Rest of the code ...
