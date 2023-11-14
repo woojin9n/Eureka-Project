@@ -7,7 +7,7 @@ import os
 import streamlit as st
 import openai
 from langchain.document_loaders import PyPDFDirectoryLoader
-from langchain.document_loaders import JSONLoader
+from langchain.document_loaders import DirectoryLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import Chroma
@@ -19,28 +19,29 @@ your_openai_api_key = os.getenv("OPENAI_API_KEY")
 pdf_directory = "./data/"
 metadata_directory = "./metadata/"
 
-# Function to extract text from JSON data
-def extract_text_from_json(json_data):
-    # Implement based on your JSON structure
-    # For example:
-    text = json_data['chapters']  # Replace 'text_field' with the actual key
-    return text
+# # Function to extract text from JSON data
+# def extract_text_from_json(json_data):
+#     # Implement based on your JSON structure
+#     # For example:
+#     text = json_data['chapters']  # Replace 'text_field' with the actual key
+#     return text
 
-# Function to load JSON files from a directory
-def load_json_directory(directory_path):
-    raw_documents = []
-    for filename in os.listdir(directory_path):
-        if filename.endswith('.json'):
-            with open(os.path.join(directory_path, filename), 'r') as file:
-                json_data = json.load(file)
-                # Extract text from JSON data here
-                # This depends on the structure of your JSON files
-                text = extract_text_from_json(json_data)
-                raw_documents.append(text)
-    return raw_documents
+# # Function to load JSON files from a directory
+# def load_json_directory(directory_path):
+#     raw_documents = []
+#     for filename in os.listdir(directory_path):
+#         if filename.endswith('.json'):
+#             with open(os.path.join(directory_path, filename), 'r') as file:
+#                 json_data = json.load(file)
+#                 # Extract text from JSON data here
+#                 # This depends on the structure of your JSON files
+#                 text = extract_text_from_json(json_data)
+#                 raw_documents.append(text)
+#     return raw_documents
 
 # Load JSON documents
-raw_documents = load_json_directory(metadata_directory)
+loader = DirectoryLoader(metadata_directory, glob="**/*.json")
+raw_documents = loader.load
 
 # Split the text into chunks
 text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
