@@ -71,8 +71,8 @@ if user_input:
         # Inspect and process the PDF data
         if isinstance(pdf_data, dict):
             # TODO: Extract and process the content from pdf_data
-            # Example: pdf_content = pdf_data['some_key']
-            # st.write(pdf_content)
+            pdf_content = pdf_data['some_key']
+            st.write(pdf_content)
             pass
         # TODO: Process the PDF data as needed
         
