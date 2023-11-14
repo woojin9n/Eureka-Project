@@ -29,9 +29,7 @@ for filename in os.listdir(metadata_directory):
     if filename.endswith('.json'):
         with open(os.path.join(metadata_directory, filename), 'r') as f:
             doc_data = json.load(f)
-            # Use filename or any other relevant information as metadata
-            document = Document(name=filename, page_content=json.dumps(doc_data), metadata={"filename": filename})
-            metadata_documents.append(document)
+            metadata_documents.append({"name": filename, "text": json.dumps(doc_data)})
 
 # Embed metadata and load it into the vector store
 db = Chroma.from_documents(metadata_documents, OpenAIEmbeddings(openai_api_key=your_openai_api_key))
@@ -64,24 +62,14 @@ st.write('Type your question related to the Tax Law and get an answer.')
 user_input = st.text_input('Ask a question:')
 
 if user_input:
-    # Generate embeddings for the user's query
-    query_embeddings = get_embeddings(user_input)
-
-    # Search in the Chroma database using embeddings
-    results = db.search_by_embedding(query_embeddings, num_results=1)
+    # Search in metadata
+    results = db.search(user_input, num_results=1)
     if results:
         relevant_document_name = results[0]['document']['name'].replace('.json', '.pdf')
         loader = PyPDFDirectoryLoader(pdf_directory)
         pdf_data = loader.load_document(relevant_document_name)
-        
-        # Process the PDF data
-        if isinstance(pdf_data, dict) and 'text' in pdf_data:
-            pdf_content_json = pdf_data['text']
-            try:
-                pdf_content = json.loads(pdf_content_json)
-                # TODO: Further process or display pdf_content as needed
-            except json.JSONDecodeError:
-                st.write("Error decoding PDF content from JSON.")
+
+        # TODO: Process the PDF data as needed
         
         # Get response from GPT
         reply = get_response(user_input)
