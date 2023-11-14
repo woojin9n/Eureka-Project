@@ -23,7 +23,6 @@ for filename in os.listdir(metadata_directory):
     if filename.endswith('.json'):
         with open(os.path.join(metadata_directory, filename), 'r', encoding='utf-8') as f:
             doc_data = json.load(f)
-            # Ensure that the document has 'page_content' key
             metadata_documents.append({"name": filename, "text": json.dumps(doc_data)})
 
 # Embed metadata and load it into the vector store
