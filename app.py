@@ -2,15 +2,15 @@ __import__('pysqlite3')
 import sys
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
-import json
+# import json
 import os
 import streamlit as st
 import openai
 from langchain.document_loaders import PyPDFDirectoryLoader
-# from langchain.document_loaders import JSONLoader
-# from langchain.embeddings.openai import OpenAIEmbeddings
-# from langchain.text_splitter import CharacterTextSplitter
-import chromadb
+from langchain.document_loaders import JSONLoader
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.text_splitter import CharacterTextSplitter
+from langchain.vectorstores import Chroma
 
 # Set up OpenAI API Key
 your_openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -19,23 +19,12 @@ your_openai_api_key = os.getenv("OPENAI_API_KEY")
 pdf_directory = "./data/"
 metadata_directory = "./metadata/"
 
-# Set up Chroma Client
-chroma_client = chromadb.Client()
-
 # # Function to extract text from JSON data
 # def extract_text_from_json(json_data):
 #     # Implement based on your JSON structure
 #     # For example:
 #     text = json_data['chapters']  # Replace 'text_field' with the actual key
 #     return text
-
-# Load Metadata
-metadata_documents = []
-for filename in os.listdir(metadata_directory):
-    if filename.endswith('.json'):
-        with open(os.path.join(metadata_directory, filename), 'r') as f:
-            doc_data = json.load(f)
-            metadata_documents.append({"name": filename, "text": json.dumps(doc_data)})
 
 # # Function to load JSON files from a directory
 # def load_json_directory(directory_path):
@@ -51,27 +40,22 @@ for filename in os.listdir(metadata_directory):
 #     return raw_documents
 
 # Load JSON documents
-# for filename in os.listdir(metadata_directory):
-#     if filename.endswith('.json'):
-#         metadata_path = os.path.join(metadata_directory, filename)
-#         loader = JSONLoader(
-#             file_path=metadata_path,
-#             jq_schema='.chapters[]',
-#             text_content=True
-#         )
-#         metadata = loader.load()
-
-# Load PDF documents
-raw_documents = PyPDFDirectoryLoader(pdf_directory)
+for filename in os.listdir(metadata_directory):
+    if filename.endswith('.json'):
+        metadata_path = os.path.join(metadata_directory, filename)
+        loader = JSONLoader(
+            file_path=metadata_path,
+            jq_schema='.chapters[]',
+            text_content=True
+        )
+        raw_documents = loader.load()
 
 # Split the text into chunks
-# text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-# documents = text_splitter.split_documents(metadata)
+text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+documents = text_splitter.split_documents(raw_documents)
 
-# Embed each data and load it into the vector store
-chroma_client.delete_collection(name="tax_law")
-collection = chroma_client.create_collection(name="tax_law")
-collection.add(documents=raw_documents, metadatas=metadata_documents, ids=["id1", "id2", "id3", "id4", "id5"])
+# Embed each chunk and load it into the vector store
+db = Chroma.from_documents(documents, OpenAIEmbeddings(openai_api_key=your_openai_api_key))
 
 def get_response(prompt):
     # Function to get a response from GPT-4 using OpenAI API.
@@ -104,11 +88,19 @@ user_input = st.text_input('Ask a question:')
 
 if user_input:
     # Generate embeddings for the user's query
-    embeddings = get_embeddings(user_input)
+    query_embeddings = get_embeddings(user_input)
 
     # Search in the Chroma database using embeddings
-    results = collection.query(query_embeddings=embeddings, query_texts=raw_documents, n_results=1)
+    results = db.search(query_embeddings, num_results=1)
+    if results:
+        relevant_document_name = results[0]['document']['name'].replace('.json', '.pdf')
+        loader = PyPDFDirectoryLoader(pdf_directory)
+        pdf_data = loader.load_document(relevant_document_name)
+
+        # TODO: Process the PDF data as needed
         
         # Get response from GPT
-    reply = get_response(user_input)
-    st.write('Response:', reply)
+        reply = get_response(user_input)
+        st.write('Response:', reply)
+    else:
+        st.write('No relevant documents found.')
