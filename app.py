@@ -61,7 +61,7 @@ raw_documents = PyPDFDirectoryLoader(pdf_directory)
 # documents = text_splitter.split_documents(metadata)
 
 # Embed each data and load it into the vector store
-database = chroma_client.create_collection(name="db")
+database = chroma_client.create_collection(name="database")
 database.add(documents=raw_documents, metadatas=metadata)
 
 def get_response(prompt):
