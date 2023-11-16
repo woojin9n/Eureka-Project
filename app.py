@@ -9,8 +9,8 @@ import openai
 from langchain.document_loaders import PyPDFDirectoryLoader
 from langchain.document_loaders import JSONLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.vectorstores import Chroma
+# from langchain.text_splitter import CharacterTextSplitter
+import chromadb
 
 # Set up OpenAI API Key
 your_openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -18,6 +18,9 @@ your_openai_api_key = os.getenv("OPENAI_API_KEY")
 # Set up directories for PDF files and metadata
 pdf_directory = "./data/"
 metadata_directory = "./metadata/"
+
+# Set up Chroma Client
+chroma_client = chromadb.Client()
 
 # # Function to extract text from JSON data
 # def extract_text_from_json(json_data):
@@ -48,14 +51,18 @@ for filename in os.listdir(metadata_directory):
             jq_schema='.chapters[]',
             text_content=True
         )
-        raw_documents = loader.load()
+        metadata = loader.load()
+
+# Load PDF documents
+raw_documents = PyPDFDirectoryLoader(pdf_directory)
 
 # Split the text into chunks
-text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-documents = text_splitter.split_documents(raw_documents)
+# text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+# documents = text_splitter.split_documents(metadata)
 
-# Embed each chunk and load it into the vector store
-db = Chroma.from_documents(documents, OpenAIEmbeddings(openai_api_key=your_openai_api_key))
+# Embed each data and load it into the vector store
+database = chroma_client.create_collection(name="db")
+database.add(documents=raw_documents, metadatas=metadata, embeddings=OpenAIEmbeddings(openai_api_key=your_openai_api_key))
 
 def get_response(prompt):
     # Function to get a response from GPT-4 using OpenAI API.
@@ -88,19 +95,11 @@ user_input = st.text_input('Ask a question:')
 
 if user_input:
     # Generate embeddings for the user's query
-    query_embeddings = get_embeddings(user_input)
+    chromaembeddings = get_embeddings(user_input)
 
     # Search in the Chroma database using embeddings
-    results = db.search(query_embeddings, num_results=1)
-    if results:
-        relevant_document_name = results[0]['document']['name'].replace('.json', '.pdf')
-        loader = PyPDFDirectoryLoader(pdf_directory)
-        pdf_data = loader.load_document(relevant_document_name)
-
-        # TODO: Process the PDF data as needed
+    results = database.query(query_embeddings=chromaembeddings, query_texts=database n_results=2)
         
         # Get response from GPT
-        reply = get_response(user_input)
-        st.write('Response:', reply)
-    else:
-        st.write('No relevant documents found.')
+    reply = get_response(user_input)
+    st.write('Response:', reply)
