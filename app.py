@@ -62,7 +62,7 @@ raw_documents = PyPDFDirectoryLoader(pdf_directory)
 
 # Embed each data and load it into the vector store
 database = chroma_client.create_collection(name="database")
-database.add(documents=raw_documents, metadatas=metadata)
+database.add(documents=raw_documents, metadatas=metadata, ids=["id1", "id2", "id3", "id4", "id5"])
 
 def get_response(prompt):
     # Function to get a response from GPT-4 using OpenAI API.
