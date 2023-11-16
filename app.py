@@ -61,6 +61,7 @@ raw_documents = PyPDFDirectoryLoader(pdf_directory)
 # documents = text_splitter.split_documents(metadata)
 
 # Embed each data and load it into the vector store
+chroma_client.delete_collection
 collection = chroma_client.create_collection(name="tax_law")
 collection.add(documents=raw_documents, metadatas=metadata, ids=["id1", "id2", "id3", "id4", "id5"])
 
