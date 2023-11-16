@@ -61,8 +61,8 @@ raw_documents = PyPDFDirectoryLoader(pdf_directory)
 # documents = text_splitter.split_documents(metadata)
 
 # Embed each data and load it into the vector store
-database = chroma_client.create_collection(name="database")
-database.add(documents=raw_documents, metadatas=metadata, ids=["id1", "id2", "id3", "id4", "id5"])
+collection = chroma_client.create_collection(name="tax_law")
+collection.add(documents=raw_documents, metadatas=metadata, ids=["id1", "id2", "id3", "id4", "id5"])
 
 def get_response(prompt):
     # Function to get a response from GPT-4 using OpenAI API.
@@ -98,7 +98,7 @@ if user_input:
     embeddings = get_embeddings(user_input)
 
     # Search in the Chroma database using embeddings
-    results = database.query(query_embeddings=embeddings, query_texts=database, n_results=1)
+    results = collection.query(query_embeddings=embeddings, query_texts=database, n_results=1)
         
         # Get response from GPT
     reply = get_response(user_input)
