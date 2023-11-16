@@ -91,7 +91,7 @@ if user_input:
     query_embeddings = get_embeddings(user_input)
 
     # Search in the Chroma database using embeddings
-    results = db.similarity_search(query_embeddings, num_results=1)
+    results = db.search(query_embeddings, num_results=1)
     if results:
         relevant_document_name = results[0]['document']['name'].replace('.json', '.pdf')
         loader = PyPDFDirectoryLoader(pdf_directory)
