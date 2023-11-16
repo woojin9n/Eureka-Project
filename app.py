@@ -48,7 +48,7 @@ for filename in os.listdir(metadata_directory):
         metadata_path = os.path.join(metadata_directory, filename)
         loader = JSONLoader(
             file_path=metadata_path,
-            jq_schema='.law_numbers[].chapters',
+            jq_schema='.chapters[]',
             text_content=True
         )
         metadata = loader.load()
