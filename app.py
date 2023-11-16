@@ -67,7 +67,8 @@ def get_response(prompt):
         ],
         max_tokens=1000
     )    
-    return response['choices'][0]['message']['content']
+    answer = response.choices[0].message.content
+    return answer
 
 # Function to generate embeddings using OpenAI
 def get_embeddings(text):
@@ -75,7 +76,8 @@ def get_embeddings(text):
          model="text-embedding-ada-002",
          input=[text]
      )
-     return response['data'][0]['embedding']
+     answer = response.data[0].embedding
+     return answer
 
 # Streamlit UI
 st.title('ChatGPT based on Tax Law')
