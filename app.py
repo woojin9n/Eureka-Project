@@ -2,7 +2,7 @@ __import__('pysqlite3')
 import sys
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
-import json
+# import json
 import os
 import streamlit as st
 import openai
@@ -91,7 +91,7 @@ if user_input:
     query_embeddings = get_embeddings(user_input)
 
     # Search in the Chroma database using embeddings
-    results = db.search_by_embedding(query_embeddings, num_results=1)
+    results = db.search(query_embeddings, num_results=1)
     if results:
         relevant_document_name = results[0]['document']['name'].replace('.json', '.pdf')
         loader = PyPDFDirectoryLoader(pdf_directory)
