@@ -8,7 +8,7 @@ import streamlit as st
 import openai
 from langchain.document_loaders import PyPDFDirectoryLoader
 from langchain.document_loaders import JSONLoader
-from langchain.embeddings.openai import OpenAIEmbeddings
+# from langchain.embeddings.openai import OpenAIEmbeddings
 # from langchain.text_splitter import CharacterTextSplitter
 import chromadb
 
@@ -62,7 +62,7 @@ raw_documents = PyPDFDirectoryLoader(pdf_directory)
 
 # Embed each data and load it into the vector store
 database = chroma_client.create_collection(name="db")
-database.add(documents=raw_documents, metadatas=metadata, embeddings=OpenAIEmbeddings(openai_api_key=your_openai_api_key))
+database.add(documents=raw_documents, metadatas=metadata)
 
 def get_response(prompt):
     # Function to get a response from GPT-4 using OpenAI API.
@@ -95,10 +95,10 @@ user_input = st.text_input('Ask a question:')
 
 if user_input:
     # Generate embeddings for the user's query
-    chromaembeddings = get_embeddings(user_input)
+    embeddings = get_embeddings(user_input)
 
     # Search in the Chroma database using embeddings
-    results = database.query(query_embeddings=chromaembeddings, query_texts=database n_results=2)
+    results = database.query(query_embeddings=embeddings, query_texts=database n_results=2)
         
         # Get response from GPT
     reply = get_response(user_input)
