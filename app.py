@@ -98,7 +98,7 @@ if user_input:
     embeddings = get_embeddings(user_input)
 
     # Search in the Chroma database using embeddings
-    results = database.query(query_embeddings=embeddings, query_texts=database n_results=2)
+    results = database.query(query_embeddings=embeddings, query_texts=raw_documents n_results=1)
         
         # Get response from GPT
     reply = get_response(user_input)
