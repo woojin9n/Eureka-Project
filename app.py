@@ -48,7 +48,7 @@ for filename in os.listdir(metadata_directory):
         metadata_path = os.path.join(metadata_directory, filename)
         loader = JSONLoader(
             file_path=metadata_path,
-            jq_schema='.chapters[]',
+            jq_schema='.title[]',
             text_content=True
         )
         metadata = loader.load()
@@ -98,7 +98,7 @@ if user_input:
     embeddings = get_embeddings(user_input)
 
     # Search in the Chroma database using embeddings
-    results = collection.query(query_embeddings=embeddings, query_texts=database, n_results=1)
+    results = collection.query(query_embeddings=embeddings, query_texts=collection, n_results=1)
         
         # Get response from GPT
     reply = get_response(user_input)
