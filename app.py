@@ -2,12 +2,12 @@ __import__('pysqlite3')
 import sys
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
-# import json
+import json
 import os
 import streamlit as st
 import openai
 from langchain.document_loaders import PyPDFDirectoryLoader
-from langchain.document_loaders import JSONLoader
+# from langchain.document_loaders import JSONLoader
 # from langchain.embeddings.openai import OpenAIEmbeddings
 # from langchain.text_splitter import CharacterTextSplitter
 import chromadb
@@ -29,6 +29,14 @@ chroma_client = chromadb.Client()
 #     text = json_data['chapters']  # Replace 'text_field' with the actual key
 #     return text
 
+# Load Metadata
+metadata_documents = []
+for filename in os.listdir(metadata_directory):
+    if filename.endswith('.json'):
+        with open(os.path.join(metadata_directory, filename), 'r') as f:
+            doc_data = json.load(f)
+            metadata_documents.append({"name": filename, "text": json.dumps(doc_data)})
+
 # # Function to load JSON files from a directory
 # def load_json_directory(directory_path):
 #     raw_documents = []
@@ -43,15 +51,15 @@ chroma_client = chromadb.Client()
 #     return raw_documents
 
 # Load JSON documents
-for filename in os.listdir(metadata_directory):
-    if filename.endswith('.json'):
-        metadata_path = os.path.join(metadata_directory, filename)
-        loader = JSONLoader(
-            file_path=metadata_path,
-            jq_schema='.chapters[]',
-            text_content=True
-        )
-        metadata = loader.load()
+# for filename in os.listdir(metadata_directory):
+#     if filename.endswith('.json'):
+#         metadata_path = os.path.join(metadata_directory, filename)
+#         loader = JSONLoader(
+#             file_path=metadata_path,
+#             jq_schema='.chapters[]',
+#             text_content=True
+#         )
+#         metadata = loader.load()
 
 # Load PDF documents
 raw_documents = PyPDFDirectoryLoader(pdf_directory)
@@ -63,7 +71,7 @@ raw_documents = PyPDFDirectoryLoader(pdf_directory)
 # Embed each data and load it into the vector store
 chroma_client.delete_collection(name="tax_law")
 collection = chroma_client.create_collection(name="tax_law")
-collection.add(documents=raw_documents, metadatas=metadata, ids=["id1", "id2", "id3", "id4", "id5"])
+collection.add(documents=raw_documents, metadatas=metadata_documents, ids=["id1", "id2", "id3", "id4", "id5"])
 
 def get_response(prompt):
     # Function to get a response from GPT-4 using OpenAI API.
