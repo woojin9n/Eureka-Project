@@ -166,7 +166,7 @@ chroma_client = chromadb.Client()
 def index_documents_in_chroma(documents, client, db_name):
     for doc in documents:
         embedding = get_embeddings(doc)
-        client.insert(embedding, doc, db_name=db_name)
+        client.add(embedding, doc, db_name=db_name)
 
 # Load and index documents
 metadata_documents = load_and_process_documents(metadata_directory, '.json')
