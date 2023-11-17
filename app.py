@@ -19,6 +19,9 @@ your_openai_api_key = os.getenv("OPENAI_API_KEY")
 pdf_directory = "./data/"
 metadata_directory = "./metadata/"
 
+# Set up text spliter
+text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+
 # # Function to extract text from JSON data
 # def extract_text_from_json(json_data):
 #     # Implement based on your JSON structure
@@ -39,23 +42,40 @@ metadata_directory = "./metadata/"
 #                 raw_documents.append(text)
 #     return raw_documents
 
-# Load JSON documents
-for filename in os.listdir(metadata_directory):
-    if filename.endswith('.json'):
-        metadata_path = os.path.join(metadata_directory, filename)
-        loader = JSONLoader(
-            file_path=metadata_path,
-            jq_schema='.chapters[]',
-            text_content=True
-        )
-        raw_documents = loader.load()
+# Function to load and process documents
+def load_and_process_documents(directory, loader):
+    documents = []
+    for filename in os.listdir(directory):
+        if filename.endswith(loader.file_extension):
+            file_path = os.path.join(directory, filename)
+            raw_documents = loader.load_document(file_path)
+            documents.extend(text_splitter.split_documents(raw_documents))
+    return documents
+
+# # Load JSON documents
+# for filename in os.listdir(metadata_directory):
+#     if filename.endswith('.json'):
+#         metadata_path = os.path.join(metadata_directory, filename)
+#         loader = JSONLoader(
+#             file_path=metadata_path,
+#             jq_schema='.chapters[]',
+#             text_content=False
+#         )
+#         raw_documents = loader.load()
 
 # Split the text into chunks
-text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-documents = text_splitter.split_documents(raw_documents)
+# documents = text_splitter.split_documents(raw_documents)
 
-# Embed each chunk and load it into the vector store
-db = Chroma.from_documents(documents, OpenAIEmbeddings(openai_api_key=your_openai_api_key))
+# Load and process JSON metadata
+metadata_loader = JSONLoader(file_path='', jq_schema='.chapters[]', text_content=False)
+metadata_documents = load_and_process_documents(metadata_directory, metadata_loader)
+
+# Load and process PDF documents
+pdf_loader = PyPDFDirectoryLoader(pdf_directory)
+pdf_documents = load_and_process_documents(pdf_directory, pdf_loader)
+
+# Embed and index documents in Chroma
+db = Chroma.from_documents(metadata_documents + pdf_documents, OpenAIEmbeddings(openai_api_key=your_openai_api_key))
 
 def get_response(prompt):
     # Function to get a response from GPT-4 using OpenAI API.
@@ -86,21 +106,30 @@ st.write('Type your question related to the Tax Law and get an answer.')
 # Input text box for user to ask questions
 user_input = st.text_input('Ask a question:')
 
+# Search and Response Logic
 if user_input:
-    # Generate embeddings for the user's query
     query_embeddings = get_embeddings(user_input)
 
-    # Search in the Chroma database using embeddings
-    results = db.search(query_embeddings, num_results=1)
-    if results:
-        relevant_document_name = results[0]['document']['name'].replace('.json', '.pdf')
-        loader = PyPDFDirectoryLoader(pdf_directory)
-        pdf_data = loader.load_document(relevant_document_name)
+    # Search in metadata
+    metadata_results = db.search(query_embeddings, num_results=1, documents=metadata_documents)
+    if metadata_results:
+        # Extracting the relevant metadata content
+        metadata_content = metadata_results[0]['document']['content']
+        # Format and display the metadata information
+        st.write('Relevant Metadata:', metadata_content)
+        # You can also use this content to inform the ChatGPT response
 
-        # TODO: Process the PDF data as needed
-        
-        # Get response from GPT
-        reply = get_response(user_input)
-        st.write('Response:', reply)
-    else:
-        st.write('No relevant documents found.')
+    # Search in PDF documents
+    pdf_results = db.search(query_embeddings, num_results=1, documents=pdf_documents)
+    if pdf_results:
+        # Extracting the relevant PDF content
+        pdf_content = pdf_results[0]['document']['content']
+        # Process and display the PDF information
+        st.write('Relevant PDF Content:', pdf_content)
+        # Use this content to guide the ChatGPT response
+
+    # Generate ChatGPT response
+    reply = get_response(user_input)
+    st.write('Response:', reply)
+else:
+    st.write('No relevant documents found.')
