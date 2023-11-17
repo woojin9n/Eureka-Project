@@ -77,10 +77,10 @@ def load_and_process_pdf(directory, metadata, file_extension, text_splitter):
                 for page in pdf_reader.pages:
                     raw_text += page.extract_text() + ' '
                 
-                # Format the document with its metadata
+                # Adjust the document structure to match what text_splitter expects
                 formatted_document = {
-                    'content': raw_text,
-                    'metadata': pdf_metadata  # Include the corresponding metadata
+                    'page_content': raw_text,  # Assuming text_splitter expects 'page_content'
+                    'metadata': pdf_metadata
                 }
                 documents.extend(text_splitter.split_documents([formatted_document]))
     return documents
