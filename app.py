@@ -77,7 +77,7 @@ def load_and_process_pdf(directory, loader, file_extension):
 # documents = text_splitter.split_documents(raw_documents)
 
 # Load and process JSON metadata
-metadata_loader = JSONLoader(jq_schema='.chapters[]', text_content=False)
+metadata_loader = JSONLoader(jq_schema='.chapters[]', text_content=False, file_path=metadata_directory)
 metadata_documents = load_and_process_json(metadata_directory, metadata_loader, '.json')
 
 # Load and process PDF documents
