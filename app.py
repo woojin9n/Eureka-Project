@@ -162,17 +162,17 @@ def load_and_process_documents(directory, file_extension):
 # Connect to ChromaDB using Client
 chroma_client = chromadb.Client()
 
-# Load and index metadata documents
-metadata_documents = load_and_process_documents(metadata_directory, '.json')
-for doc in metadata_documents:
-    embedding = get_embeddings(doc)
-    chroma_client.insert(embedding, doc, db_name='metadata_db')
+# Function to index documents in ChromaDB
+def index_documents_in_chroma(documents, client, db_name):
+    for doc in documents:
+        embedding = get_embeddings(doc)
+        client.add(embedding, doc, db_name=db_name)
 
-# Load and index PDF documents
+# Load and index documents
+metadata_documents = load_and_process_documents(metadata_directory, '.json')
 pdf_documents = load_and_process_documents(pdf_directory, '.pdf')
-for doc in pdf_documents:
-    embedding = get_embeddings(doc)
-    chroma_client.insert(embedding, doc, db_name='pdf_db')
+index_documents_in_chroma(metadata_documents, chroma_client, db_name='metadata_db')
+index_documents_in_chroma(pdf_documents, chroma_client, db_name='pdf_db')
 
 def get_gpt4_chat_response(prompt, context):
     # Function to get a response from GPT-4 using OpenAI API.
