@@ -7,12 +7,12 @@ import os
 import streamlit as st
 import openai
 import PyPDF2
+import chromadb
 # from langchain.document_loaders import PyPDFDirectoryLoader
 # from langchain.document_loaders import JSONLoader
 # from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 # from langchain.vectorstores import Chroma
-import chromadb
 
 # Set up OpenAI API Key
 your_openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -134,7 +134,7 @@ def load_and_process_documents(directory, file_extension):
             with open(os.path.join(directory, filename), 'rb') as file:
                 if file_extension == '.json':
                     json_data = json.load(file)
-                    raw_text = json_data['content']  # Adjust according to JSON structure
+                    raw_text = json_data['chapters']  # Adjust according to JSON structure
                 else:  # PDF processing
                     pdf_reader = PyPDF2.PdfReader(file)
                     raw_text = ' '.join([page.extract_text() for page in pdf_reader.pages])
@@ -160,22 +160,21 @@ def load_and_process_documents(directory, file_extension):
 # db = Chroma.from_documents(formatted_metadata_documents + formatted_pdf_documents, OpenAIEmbeddings(openai_api_key=your_openai_api_key))
 
 # Connect to ChromaDB using Client
-metadata_db_client = chromadb.Client(db_name='metadata_db')
-pdf_db_client = chromadb.Client(db_name='pdf_db')
+chroma_client = chromadb.Client()
 
-# Index documents in ChromaDB
-def index_documents_in_chroma(documents, db):
+# Function to index documents in ChromaDB
+def index_documents_in_chroma(documents, client, db_name):
     for doc in documents:
         embedding = get_embeddings(doc)
-        db.insert(embedding, doc)
+        client.insert(embedding, doc, db_name=db_name)
 
 # Load and index documents
 metadata_documents = load_and_process_documents(metadata_directory, '.json')
 pdf_documents = load_and_process_documents(pdf_directory, '.pdf')
-index_documents_in_chroma(metadata_documents, metadata_db_client)
-index_documents_in_chroma(pdf_documents, pdf_db_client)
+index_documents_in_chroma(metadata_documents, chroma_client, db_name='metadata_db')
+index_documents_in_chroma(pdf_documents, chroma_client, db_name='pdf_db')
 
-def get_response(prompt, context):
+def get_gpt4_chat_response(prompt, context):
     # Function to get a response from GPT-4 using OpenAI API.
     response = openai.chat.completions.create(
         model="gpt-4",
@@ -201,12 +200,12 @@ if user_input:
     context = ''
 
     # Search in metadata
-    metadata_results = metadata_db_client.search(query_embedding, k=1)
+    metadata_results = chroma_client.search(query_embedding, k=1, db_name='metadata_db')
     if metadata_results:
         context = metadata_results[0]['data']
     else:
         # Search in PDF documents if no results found in metadata
-        pdf_results = pdf_db_client.search(query_embedding, k=1)
+        pdf_results = chroma_client.search(query_embedding, k=1, db_name='pdf_db')
         if pdf_results:
             context = pdf_results[0]['data']
 
