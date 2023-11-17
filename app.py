@@ -93,12 +93,10 @@ def load_and_process_pdf(directory, metadata, file_extension, chunk_size=1000):
     return documents
 
 def format_for_chroma(documents):
-    # Adjust the document format to match the expected structure by Chroma
     formatted_documents = []
     for doc in documents:
         formatted_doc = {
-            'page_content': doc['content'],  # Use 'content' as 'page_content'
-            # Include other relevant information if necessary, like metadata
+            'page_content': doc['content'],  # Ensure 'content' is the correct key
         }
         formatted_documents.append(formatted_doc)
     return formatted_documents
