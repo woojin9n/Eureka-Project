@@ -21,7 +21,8 @@ pdf_directory = "./data/"
 metadata_directory = "./metadata/"
 
 # Set up text spliter
-text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+def custom_text_splitter(text, chunk_size=1000):
+    return [text[i:i+chunk_size] for i in range(0, len(text), chunk_size)]
 
 # # Function to extract text from JSON data
 # def extract_text_from_json(json_data):
@@ -62,7 +63,7 @@ def load_metadata(directory):
                 metadata[pdf_filename] = json.load(file)
     return metadata
 
-def load_and_process_pdf(directory, metadata, file_extension, text_splitter):
+def load_and_process_pdf(directory, metadata, file_extension, chunk_size=1000):
     documents = []
     for filename in os.listdir(directory):
         if filename.endswith(file_extension):
@@ -77,8 +78,8 @@ def load_and_process_pdf(directory, metadata, file_extension, text_splitter):
                 for page in pdf_reader.pages:
                     raw_text += page.extract_text() + ' '
 
-                # Split the text into chunks
-                chunks = text_splitter.split_documents(raw_text)
+                # Split the text into chunks using the custom text splitter
+                chunks = custom_text_splitter(raw_text, chunk_size)
 
                 # Combine each chunk with its metadata
                 for chunk in chunks:
@@ -112,7 +113,7 @@ pdf_metadata = load_metadata(metadata_directory)
 
 # Load and process PDF data
 # Assuming you have a dictionary `pdf_metadata` where keys are filenames and values are metadata
-pdf_documents = load_and_process_pdf(pdf_directory, pdf_metadata, '.pdf', text_splitter)
+pdf_documents = load_and_process_pdf(pdf_directory, pdf_metadata, '.pdf')
 
 # Embed and index documents in Chroma
 db = Chroma.from_documents(metadata_documents + pdf_documents, OpenAIEmbeddings(openai_api_key=your_openai_api_key))
