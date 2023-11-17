@@ -92,6 +92,17 @@ def load_and_process_pdf(directory, metadata, file_extension, chunk_size=1000):
                     documents.append(formatted_document)
     return documents
 
+def format_for_chroma(documents):
+    # Adjust the document format to match the expected structure by Chroma
+    formatted_documents = []
+    for doc in documents:
+        formatted_doc = {
+            'page_content': doc['content'],  # Use 'content' as 'page_content'
+            # Include other relevant information if necessary, like metadata
+        }
+        formatted_documents.append(formatted_doc)
+    return formatted_documents
+
 # # Load JSON documents
 # for filename in os.listdir(metadata_directory):
 #     if filename.endswith('.json'):
@@ -117,8 +128,12 @@ pdf_metadata = load_metadata(metadata_directory)
 # Assuming you have a dictionary `pdf_metadata` where keys are filenames and values are metadata
 pdf_documents = load_and_process_pdf(pdf_directory, pdf_metadata, '.pdf')
 
-# Embed and index documents in Chroma
-db = Chroma.from_documents(metadata_documents + pdf_documents, OpenAIEmbeddings(openai_api_key=your_openai_api_key))
+# Format the documents for Chroma
+formatted_metadata_documents = format_for_chroma(metadata_documents)
+formatted_pdf_documents = format_for_chroma(pdf_documents)
+
+# Combine and create the Chroma database
+db = Chroma.from_documents(formatted_metadata_documents + formatted_pdf_documents, OpenAIEmbeddings(openai_api_key=your_openai_api_key))
 
 def get_response(prompt):
     # Function to get a response from GPT-4 using OpenAI API.
