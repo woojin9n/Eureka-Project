@@ -6,12 +6,12 @@ sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 import os
 import streamlit as st
 import openai
-from langchain.document_loaders import PyPDFDirectoryLoader
+import PyPDF2
+# from langchain.document_loaders import PyPDFDirectoryLoader
 from langchain.document_loaders import JSONLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import Chroma
-import PyPDF2
 
 # Set up OpenAI API Key
 your_openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -102,7 +102,7 @@ def get_response(prompt):
     return answer
 
 # Function to generate embeddings using OpenAI
-def get_embeddings(text):
+def get_embeddings(list):
      response = openai.embeddings.create(
          model="text-embedding-ada-002",
          input=[list]
