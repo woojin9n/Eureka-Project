@@ -11,7 +11,7 @@ import chromadb
 # from langchain.document_loaders import PyPDFDirectoryLoader
 # from langchain.document_loaders import JSONLoader
 # from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.text_splitter import CharacterTextSplitter
+# from langchain.text_splitter import CharacterTextSplitter
 # from langchain.vectorstores import Chroma
 
 # Set up OpenAI API Key
@@ -22,8 +22,9 @@ openai.api_key = your_openai_api_key
 pdf_directory = "./data/"
 metadata_directory = "./metadata/"
 
-# Set up text spliter
-text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+# Custom text splitter function
+def custom_text_splitter(text, chunk_size=1000):
+    return [text[i:i+chunk_size] for i in range(0, len(text), chunk_size)]
 
 # def custom_text_splitter(text, chunk_size=1000):
 #     return [text[i:i+chunk_size] for i in range(0, len(text), chunk_size)]
@@ -134,12 +135,11 @@ def load_and_process_documents(directory, file_extension):
             with open(os.path.join(directory, filename), 'rb') as file:
                 if file_extension == '.json':
                     json_data = json.load(file)
-                    content = json_data['chapters']  # Adjust according to JSON structure
-                    documents.extend(text_splitter.split_documents([{"page_content": content}]))
+                    content = json_data['content']  # Adjust according to JSON structure
                 else:  # PDF processing
                     pdf_reader = PyPDF2.PdfReader(file)
                     content = ' '.join([page.extract_text() for page in pdf_reader.pages])
-                    documents.extend(text_splitter.split_documents([{"page_content": content}]))
+                documents.extend(custom_text_splitter(content, 1000))  # Use the custom text splitter
     return documents
 # # Load and process JSON metadata
 # json_files = [os.path.join(metadata_directory, f) for f in os.listdir(metadata_directory) if f.endswith('.json')]
