@@ -134,7 +134,7 @@ def load_and_process_documents(directory, file_extension):
             with open(os.path.join(directory, filename), 'rb') as file:
                 if file_extension == '.json':
                     json_data = json.load(file)
-                    raw_text = json_data['content']  # Adjust according to JSON structure
+                    raw_text = json_data['chapters']  # Adjust according to JSON structure
                 else:  # PDF processing
                     pdf_reader = PyPDF2.PdfReader(file)
                     raw_text = ' '.join([page.extract_text() for page in pdf_reader.pages])
