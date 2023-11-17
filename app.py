@@ -166,14 +166,13 @@ chroma_client = chromadb.Client()
 def index_documents_in_chroma(documents, client, db_name):
     for doc in documents:
         embedding = get_embeddings(doc)
-        client.get_collection(embedding, doc)
-    client.get_collection(name=db_name)
+        client.add(embedding, doc, name=db_name)
 
 # Load and index documents
 metadata_documents = load_and_process_documents(metadata_directory, '.json')
 pdf_documents = load_and_process_documents(pdf_directory, '.pdf')
-metadata_db = index_documents_in_chroma(metadata_documents, chroma_client, db_name='metadata_db')
-pdf_db = index_documents_in_chroma(pdf_documents, chroma_client, db_name='pdf_db')
+index_documents_in_chroma(metadata_documents, chroma_client, db_name='metadata_db')
+index_documents_in_chroma(pdf_documents, chroma_client, db_name='pdf_db')
 
 def get_gpt4_chat_response(prompt, context):
     # Function to get a response from GPT-4 using OpenAI API.
@@ -201,12 +200,12 @@ if user_input:
     context = ''
 
     # Search in metadata
-    metadata_results = metadata_db.search(query_embedding, k=1, db_name='metadata_db')
+    metadata_results = chroma_client.search(query_embedding, k=1, db_name='metadata_db')
     if metadata_results:
         context = metadata_results[0]['data']
     else:
         # Search in PDF documents if no results found in metadata
-        pdf_results = pdf_db.search(query_embedding, k=1, db_name='pdf_db')
+        pdf_results = chroma_client.search(query_embedding, k=1, db_name='pdf_db')
         if pdf_results:
             context = pdf_results[0]['data']
 
