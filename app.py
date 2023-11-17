@@ -42,19 +42,25 @@ text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 #                 raw_documents.append(text)
 #     return raw_documents
 
-# Function to load and process documents
-def load_and_process_documents(directory, loader, file_extension):
+# Function to load and process JSON documents
+def load_and_process_json(directory, loader, file_extension):
+    documents = []
+    for filename in os.listdir(directory):
+        if filename.endswith(file_extension):
+            file_path = os.path.join(directory, filename)
+            raw_documents = loader.load(file_path)  # Adjusted to use loader.load
+            documents.extend(text_splitter.split_documents(raw_documents))
+    return documents
+
+# Function to load and process PDF documents
+def load_and_process_pdf(directory, loader, file_extension):
     documents = []
     for filename in os.listdir(directory):
         if filename.endswith(file_extension):
             file_path = os.path.join(directory, filename)
             raw_documents = loader.load_document(file_path)
-            # Ensure that raw_documents is a list before extending
-            if not isinstance(raw_documents, list):
-                raw_documents = [raw_documents]
             documents.extend(text_splitter.split_documents(raw_documents))
     return documents
-
 
 # # Load JSON documents
 # for filename in os.listdir(metadata_directory):
@@ -71,12 +77,12 @@ def load_and_process_documents(directory, loader, file_extension):
 # documents = text_splitter.split_documents(raw_documents)
 
 # Load and process JSON metadata
-metadata_loader = JSONLoader(file_path='', jq_schema='.chapters[]', text_content=False)
-metadata_documents = load_and_process_documents(metadata_directory, metadata_loader, '.json')
+metadata_loader = JSONLoader(jq_schema='.chapters[]', text_content=False)
+metadata_documents = load_and_process_json(metadata_directory, metadata_loader, '.json')
 
 # Load and process PDF documents
 pdf_loader = PyPDFDirectoryLoader(pdf_directory)
-pdf_documents = load_and_process_documents(pdf_directory, pdf_loader, '.pdf')
+pdf_documents = load_and_process_pdf(pdf_directory, pdf_loader, '.pdf')
 
 # Embed and index documents in Chroma
 db = Chroma.from_documents(metadata_documents + pdf_documents, OpenAIEmbeddings(openai_api_key=your_openai_api_key))
