@@ -10,7 +10,6 @@ import PyPDF2
 # from langchain.document_loaders import PyPDFDirectoryLoader
 from langchain.document_loaders import JSONLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
-pdf_documents = load_and_process_pdf(pdf_directory, pdf_metadata, '.pdf', text_splitter)
 from langchain.vectorstores import Chroma
 
 # Set up OpenAI API Key
