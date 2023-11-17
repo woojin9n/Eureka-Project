@@ -134,13 +134,13 @@ def load_and_process_documents(directory, file_extension):
             with open(os.path.join(directory, filename), 'rb') as file:
                 if file_extension == '.json':
                     json_data = json.load(file)
-                    raw_text = json_data['chapters']  # Adjust according to JSON structure
+                    content = json_data['chapters']  # Adjust according to JSON structure
+                    documents.extend(text_splitter.split_documents([{"page_content": content}]))
                 else:  # PDF processing
                     pdf_reader = PyPDF2.PdfReader(file)
-                    raw_text = ' '.join([page.extract_text() for page in pdf_reader.pages])
-                documents.extend(text_splitter.split_documents(raw_text))
+                    content = ' '.join([page.extract_text() for page in pdf_reader.pages])
+                    documents.extend(text_splitter.split_documents([{"page_content": content}]))
     return documents
-
 # # Load and process JSON metadata
 # json_files = [os.path.join(metadata_directory, f) for f in os.listdir(metadata_directory) if f.endswith('.json')]
 # metadata_documents = load_and_process_json(json_files, jq_schema='.chapters[]', text_splitter=text_splitter)
