@@ -2,7 +2,7 @@ __import__('pysqlite3')
 import sys
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
-# import json
+import json
 import os
 import streamlit as st
 import openai
@@ -51,17 +51,38 @@ def load_and_process_json(files, jq_schema, text_splitter):
         documents.extend(text_splitter.split_documents(raw_documents))
     return documents
 
-def load_and_process_pdf(directory, file_extension, text_splitter):
+def load_metadata(directory):
+    metadata = {}
+    for filename in os.listdir(directory):
+        if filename.endswith('.json'):
+            file_path = os.path.join(directory, filename)
+            with open(file_path, 'r') as file:
+                # Assuming the metadata JSON file name corresponds to the PDF file name
+                pdf_filename = filename.replace('.json', '.pdf')
+                metadata[pdf_filename] = json.load(file)
+    return metadata
+
+def load_and_process_pdf(directory, metadata, file_extension, text_splitter):
     documents = []
     for filename in os.listdir(directory):
         if filename.endswith(file_extension):
             file_path = os.path.join(directory, filename)
+            
+            # Retrieve corresponding metadata for the PDF
+            pdf_metadata = metadata.get(filename, {})
+
             with open(file_path, 'rb') as file:
                 pdf_reader = PyPDF2.PdfReader(file)
                 raw_text = ''
                 for page in pdf_reader.pages:
-                    raw_text += page.extract_text() + ' '  # Extract text from each page
-                documents.extend(text_splitter.split_documents([raw_text]))
+                    raw_text += page.extract_text() + ' '
+                
+                # Format the document with its metadata
+                formatted_document = {
+                    'content': raw_text,
+                    'metadata': pdf_metadata  # Include the corresponding metadata
+                }
+                documents.extend(text_splitter.split_documents([formatted_document]))
     return documents
 
 # # Load JSON documents
@@ -82,8 +103,12 @@ def load_and_process_pdf(directory, file_extension, text_splitter):
 json_files = [os.path.join(metadata_directory, f) for f in os.listdir(metadata_directory) if f.endswith('.json')]
 metadata_documents = load_and_process_json(json_files, jq_schema='.chapters[]', text_splitter=text_splitter)
 
-# Load and process PDF documents
-pdf_documents = load_and_process_pdf(pdf_directory, '.pdf', text_splitter)
+# Load metadata from the metadata directory
+pdf_metadata = load_metadata(metadata_directory)
+
+# Load and process PDF data
+# Assuming you have a dictionary `pdf_metadata` where keys are filenames and values are metadata
+pdf_documents = load_and_process_pdf(pdf_directory, pdf_metadata, '.pdf', text_splitter)
 
 # Embed and index documents in Chroma
 db = Chroma.from_documents(metadata_documents + pdf_documents, OpenAIEmbeddings(openai_api_key=your_openai_api_key))
