@@ -11,6 +11,7 @@ from langchain.document_loaders import JSONLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import Chroma
+import PyPDF2
 
 # Set up OpenAI API Key
 your_openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -50,14 +51,17 @@ def load_and_process_json(files, jq_schema, text_splitter):
         documents.extend(text_splitter.split_documents(raw_documents))
     return documents
 
-# Function to load and process PDF documents
-def load_and_process_pdf(directory, loader, file_extension):
+def load_and_process_pdf(directory, file_extension, text_splitter):
     documents = []
     for filename in os.listdir(directory):
         if filename.endswith(file_extension):
             file_path = os.path.join(directory, filename)
-            raw_documents = loader.load_document(file_path)
-            documents.extend(text_splitter.split_documents(raw_documents))
+            with open(file_path, 'rb') as file:
+                pdf_reader = PyPDF2.PdfReader(file)
+                raw_text = ''
+                for page in pdf_reader.pages:
+                    raw_text += page.extract_text() + ' '  # Extract text from each page
+                documents.extend(text_splitter.split_documents([raw_text]))
     return documents
 
 # # Load JSON documents
@@ -79,8 +83,7 @@ json_files = [os.path.join(metadata_directory, f) for f in os.listdir(metadata_d
 metadata_documents = load_and_process_json(json_files, jq_schema='.chapters[]', text_splitter=text_splitter)
 
 # Load and process PDF documents
-pdf_loader = PyPDFDirectoryLoader(pdf_directory)
-pdf_documents = load_and_process_pdf(pdf_directory, pdf_loader, '.pdf')
+pdf_documents = load_and_process_pdf(pdf_directory, '.pdf', text_splitter)
 
 # Embed and index documents in Chroma
 db = Chroma.from_documents(metadata_documents + pdf_documents, OpenAIEmbeddings(openai_api_key=your_openai_api_key))

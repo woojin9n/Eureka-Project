@@ -1,6 +1,6 @@
 openai
 langchain
-pypdf
+pypdf2
 chromadb
 pysqlite3-binary
 tiktoken
