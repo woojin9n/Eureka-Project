@@ -42,14 +42,12 @@ text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 #                 raw_documents.append(text)
 #     return raw_documents
 
-# Function to load and process JSON documents
-def load_and_process_json(directory, loader, file_extension):
+def load_and_process_json(files, jq_schema, text_splitter):
     documents = []
-    for filename in os.listdir(directory):
-        if filename.endswith(file_extension):
-            file_path = os.path.join(directory, filename)
-            raw_documents = loader.load(file_path)  # Adjusted to use loader.load
-            documents.extend(text_splitter.split_documents(raw_documents))
+    for file_path in files:
+        loader = JSONLoader(file_path=file_path, jq_schema=jq_schema, text_content=False)
+        raw_documents = loader.load()
+        documents.extend(text_splitter.split_documents(raw_documents))
     return documents
 
 # Function to load and process PDF documents
@@ -77,8 +75,8 @@ def load_and_process_pdf(directory, loader, file_extension):
 # documents = text_splitter.split_documents(raw_documents)
 
 # Load and process JSON metadata
-metadata_loader = JSONLoader(jq_schema='.chapters[]', text_content=False, file_path=metadata_directory)
-metadata_documents = load_and_process_json(metadata_directory, metadata_loader, '.json')
+json_files = [os.path.join(metadata_directory, f) for f in os.listdir(metadata_directory) if f.endswith('.json')]
+metadata_documents = load_and_process_json(json_files, jq_schema='.chapters[]', text_splitter=text_splitter)
 
 # Load and process PDF documents
 pdf_loader = PyPDFDirectoryLoader(pdf_directory)
