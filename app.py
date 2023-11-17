@@ -78,7 +78,7 @@ def load_and_process_pdf(directory, metadata, file_extension, text_splitter):
                     raw_text += page.extract_text() + ' '
 
                 # Split the text into chunks
-                chunks = text_splitter.split_documents([raw_text])
+                chunks = text_splitter.split_documents(raw_text)
 
                 # Combine each chunk with its metadata
                 for chunk in chunks:
