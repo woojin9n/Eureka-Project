@@ -10,7 +10,7 @@ import PyPDF2
 # from langchain.document_loaders import PyPDFDirectoryLoader
 from langchain.document_loaders import JSONLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.text_splitter import CharacterTextSplitter
+pdf_documents = load_and_process_pdf(pdf_directory, pdf_metadata, '.pdf', text_splitter)
 from langchain.vectorstores import Chroma
 
 # Set up OpenAI API Key
@@ -76,13 +76,17 @@ def load_and_process_pdf(directory, metadata, file_extension, text_splitter):
                 raw_text = ''
                 for page in pdf_reader.pages:
                     raw_text += page.extract_text() + ' '
-                
-                # Adjust the document structure to match what text_splitter expects
-                formatted_document = {
-                    'page_content': raw_text,  # Assuming text_splitter expects 'page_content'
-                    'metadata': pdf_metadata
-                }
-                documents.extend(text_splitter.split_documents([formatted_document]))
+
+                # Split the text into chunks
+                chunks = text_splitter.split_documents([raw_text])
+
+                # Combine each chunk with its metadata
+                for chunk in chunks:
+                    formatted_document = {
+                        'content': chunk,  # The chunk of text
+                        'metadata': pdf_metadata  # The corresponding metadata
+                    }
+                    documents.append(formatted_document)
     return documents
 
 # # Load JSON documents
