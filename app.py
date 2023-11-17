@@ -10,7 +10,7 @@ import PyPDF2
 # from langchain.document_loaders import PyPDFDirectoryLoader
 from langchain.document_loaders import JSONLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
-# from langchain.text_splitter import CharacterTextSplitter
+from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import Chroma
 
 # Set up OpenAI API Key
@@ -21,6 +21,8 @@ pdf_directory = "./data/"
 metadata_directory = "./metadata/"
 
 # Set up text spliter
+text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+
 def custom_text_splitter(text, chunk_size=1000):
     return [text[i:i+chunk_size] for i in range(0, len(text), chunk_size)]
 
