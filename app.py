@@ -94,7 +94,7 @@ def get_response(prompt):
 def get_embeddings(text):
      response = openai.embeddings.create(
          model="text-embedding-ada-002",
-         input=[text]
+         input=[list]
      )
      answer = response.data[0].embedding
      return answer
