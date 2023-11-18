@@ -23,4 +23,4 @@ jobs:
       env:
         OPENAI_API_KEY: ${{ secrets.env }}
       run: |
-        index.html
+        app.py
