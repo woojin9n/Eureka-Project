@@ -1,8 +1,0 @@
-openai
-langchain
-pypdf
-PyPDF2
-chromadb
-pysqlite3-binary
-tiktoken
-jq
