@@ -37,18 +37,28 @@ def get_embeddings(text):
     answer = response.data[0].embedding
     return answer
 
-# Function to get a response from GPT-4 using OpenAI API
-def get_gpt4_chat_response(prompt, context):
-    response = openai.chat.completions.create(
-        model="gpt-4",
-        messages=[
-            {"role": "system", "content": "You are a tax law expert AI to assist the legal profession. You provide the legal profession with the best knowledge and analyses based on the client's statement the legal profession has shared. It doesn't matter if your analysis is incomplete because it is just a reference. The legal profession will properly advise referring to your analysis as a reference. Generate response in the same language as the CLIENT ASKING."},
-            {"role": "user", "content": f"Context: {context}\nQuestion: {prompt}"}
-        ],
-        max_tokens=500
-    )    
-    answer = response.choices[0].message.content
-    return answer
+# # Function to get a response from GPT-4 using OpenAI API
+# def get_gpt4_chat_response(prompt, context):
+#     response = openai.chat.completions.create(
+#         model="gpt-4",
+#         messages=[
+#             {"role": "system", "content": "You are a tax law expert AI to assist the legal profession. You provide the legal profession with the best knowledge and analyses based on the client's statement the legal profession has shared. It doesn't matter if your analysis is incomplete because it is just a reference. The legal profession will properly advise referring to your analysis as a reference. Generate response in the same language as the CLIENT ASKING."},
+#             {"role": "user", "content": f"Context: {context}\nQuestion: {prompt}"}
+#         ],
+#         max_tokens=500
+#     )    
+#     answer = response.choices[0].message.content
+#     return answer
+
+# Set up Assistant API
+assistant = openai.beta.assistants.create(
+    name="Tax Law chatbot",
+    instructions="The main role of the tax law chatbot is to provide answers and solutions to questions requested by users, utilizing its tax law expertise and, now, the latest information in the OpenAI API documentation. Your job is to provide accurate tax law information in the context of the need, first by finding the appropriate content for the user's question in the JSON file data, and then by finding the appropriate content in the PDF file data related to the JSON file data. If a request is vague or incomplete, ask for more details to ensure an accurate and helpful response. Maintain a friendly and approachable tone while maintaining a professional demeanor. Treat users with respect and courtesy, and provide personalized answers when possible. ",
+    tools=[{"type": "retrieval"}],
+    model="gpt-4-1106-preview"
+)
+
+thread = openai.beta.threads.create()
 
 # Load and process documents
 def load_and_process_documents(directory, file_extension):
