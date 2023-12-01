@@ -50,15 +50,23 @@ metadata_directory = "./metadata/"
 #     return answer
 
 # Upload a file with an "assistants" purpose
-metafile = openai.files.create(
-  file=open(metadata_directory, "rb"),
-  purpose='assistants'
-)
+for filename in os.listdir(metadata_directory):
+    if filename.endswith(".json"): 
+        file_path = os.path.join(metadata_directory, filename)
+        with open(file_path, "rb") as file:
+            metafile = openai.files.create(
+                file=file,
+                purpose='assistants'
+            )
 
-datafile = openai.files.create(
-  file=open(pdf_directory, "rb"),
-  purpose='assistants'
-)
+for filename in os.listdir(pdf_directory):
+    if filename.endswith(".json"): 
+        file_path = os.path.join(pdf_directory, filename)
+        with open(file_path, "rb") as file:
+            datafile = openai.files.create(
+                file=file,
+                purpose='assistants'
+            )
 
 # Set up Assistant API
 assistant = openai.beta.assistants.create(
