@@ -8,8 +8,7 @@ import openai
 app = Flask(__name__)
 
 # Set up OpenAI API Key
-your_openai_api_key = os.getenv("OPENAI_API_KEY")
-openai.api_key = your_openai_api_key
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Set up directories for PDF files and metadata
 pdf_directory = "./data/"
