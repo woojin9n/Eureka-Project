@@ -52,8 +52,7 @@ metadata_directory = "./metadata/"
 
 # Upload a file with an "assistants" purpose
 file = openai.files.create(
-  metafile=open(metadata_directory, "rb"),
-  datafile=open(pdf_directory, "rb"),
+  file=open([metadata_directory, pdf_directory], "rb"),
   purpose='assistants'
 )
 
