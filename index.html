@@ -4,31 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Law and Life</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet"> 
     <style>
-        body { font-family: 'Gulim', Arial, sans-serif; text-align: center; margin: 0; padding: 0; }
-        .title { font-family: 'Dancing Script', cursive; font-size: 48px; margin-bottom: 30px; }
-        .content { width: 80%; margin: auto; padding: 50px 0; }
-        .content p { font-family: 'Gulim', Arial, sans-serif; margin-bottom: 20px; }
-        .menu { display: flex; justify-content: center; background-color: #f2f2f2; padding: 20px 0; margin-bottom: 50px; }
-        .menu a { 
-            padding: 10px 20px; 
-            text-decoration: none; 
-            color: #333; 
-            transition: background-color 0.3s, color 0.3s; 
+        body { 
+            font-family: 'Gulim', Arial, sans-serif; 
+            text-align: center; 
+            margin: 0; 
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            /* 배경 이미지 설정 */
+            background-image: url('https://github.com/seojin1030/ddd/blob/main/DALL%C2%B7E%202023-11-30%2022.02.13%20-%20An%20image%20depicting%20a%20professional,%20modern%20office%20environment%20with%20elements%20related%20to%20tax%20and%20real%20estate%20law.%20The%20scene%20includes%20a%20large,%20sleek%20woode.png?raw=true'); /* 예시 이미지 URL */
+            background-size: cover; /* 화면에 꽉 차도록 이미지 크기 조절 */
+            background-position: center; /* 이미지 위치를 화면 중앙으로 조정 */
         }
-        .menu a:hover { background-color: #a5902a; color: white; }
-        .chat-btn { 
-            position: fixed; 
-            bottom: 20px; 
-            right: 20px; 
-            padding: 10px 20px; 
-            background-color: #a5902a; 
-            color: white; 
-            text-decoration: none; 
-            border-radius: 5px; 
-            transition: background-color 0.3s; 
+        .title { 
+            font-family: 'Dancing Script', cursive; 
+            font-size: 48px; 
+            margin-bottom: 30px; 
         }
+        .content { 
+            width: 80%; 
+            padding: 50px 0; 
+        }
+        .content p { 
+            font-family: 'Gulim', Arial, sans-serif; 
+            margin-bottom: 20px; 
+        }
+        .menu { 
+    display: flex; 
+    justify-content: center; 
+    background-color: rgba(255, 255, 255, 0.5); /* 투명도를 추가한 흰색 배경 */
+    width: 100%; /* 메뉴 바의 너비를 전체 페이지 너비로 설정 */
+    padding: 15px 0; /* 상하 패딩을 늘려 메뉴 바의 높이를 증가 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 메뉴 바에 그림자 효과 추가 */
+    border-radius: 10px; /* 모서리를 둥글게 만들기 */
+    position: fixed; /* 위치를 고정합니다 */
+    bottom: 0; /* 화면 하단에 붙입니다 */
+    left: 0; /* 화면 왼쪽에 붙입니다 */
+    z-index: 1000; /* 다른 요소들 위에 표시되도록 z-index 설정 */
+        }
+
+
+   .menu a { 
+       padding: 10px 20px; 
+       text-decoration: none; 
+       color: #333; 
+       transition: background-color 0.3s, color 0.3s; 
+       font-size: 18px; /* 링크의 글자 크기 증가 */
+      }
+   
+   .menu a:hover { 
+       background-color: #a5902a; 
+       color: white; 
+      }
+
         .image-container { 
             width: 100%; 
             margin: 20px 0; 
@@ -37,39 +69,44 @@
             width: 100%; 
             height: auto; 
         }
+        .chat-btn { 
+            display: none; /* 채팅 시작하기 버튼을 화면에서 숨깁니다. */
+        }
+        #user-input { 
+            width: calc(100% - 40px); /* 화면 양 옆에 여백을 주기 위해 40px를 빼줍니다. */
+            padding: 20px; /* 텍스트 입력 필드에 적절한 패딩을 추가합니다. */
+            box-sizing: border-box; /* 패딩과 테두리가 요소의 너비에 포함되도록 설정합니다. */
+            margin-bottom: 20px; /* input 요소와 버튼 사이의 간격을 설정합니다. */
+        }
+        #submit-button { 
+            padding: 15px 25px; /* 버튼의 패딩을 설정합니다. */
+            box-sizing: border-box; /* 패딩과 테두리가 요소의 크기에 포함되도록 설정합니다. */
+            height: 60px; /* 버튼의 높이를 설정합니다. */
+            width: 200px; /* 버튼의 너비를 설정합니다. */
+            margin-bottom: 20px; /* input 요소와 버튼 사이의 간격을 설정합니다. */
+        }
     </style>
-
 </head>
 <body>
     <header>
         <h1 class="title">Law and Life</h1>
     </header>
     <div class="content">
-        
-        <!-- 이미지 컨테이너 -->
-        <div class="image-container">
-            <img src="https://www.eaels.com/content/attorney%20june25.jpeg" alt="Descriptive Text for Image">
-        </div>
         <h1>Tax Law Chat</h1>
         <main>
             <input type="text" id="user-input" placeholder="Ask a question">
+            <br>
             <button id="submit-button">Submit</button>
             <div id="response-container"></div>
         </main>
         <script src="script.js"></script>
-
-        <p>우리는 살면서 다양한 세법과 어우러 살아갑니다.</p>
-        <p>그 중 가장 밀접한 주거와 관련된 세법은, 우리가 살아가면서 당면할 수 밖에 없는 영역입니다.</p>
-        <p>이제 'Law and Life'에서, 원하는 문제를 찾고 저희의 도움을 받아 문제를 해결하세요.</p>
     </div>
     <div class="menu">
         <a href="qa.html">Q&A 게시판</a>
         <a href="info.html">법률 정보</a>
-        <a href="consultation.html">전문가 상담 예약</a>
+        <a href="Res.html">전문가 상담 예약</a>
         <a href="news.html">최신 법률 뉴스</a>
         <a href="reviews.html">사용자 리뷰 및 피드백</a>
     </div>
-    <a href="chat.html" class="chat-btn">채팅 시작하기</a>
-
 </body>
 </html>
