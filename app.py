@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request, jsonify
 import os
 import openai
-import json
-import PyPDF2
-import chromadb
+# import json
+# import PyPDF2
+# import chromadb
 
 app = Flask(__name__)
 
