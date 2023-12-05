@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     submitButton.addEventListener("click", () => {
         const userQuery = userInput.value;
-
+    }
         // Making an AJAX call to the app.py route with the user input
         fetch("/api/get_response", {
     // ... 요청 설정 ...
