@@ -7,24 +7,17 @@ document.addEventListener("DOMContentLoaded", function () {
         const userQuery = userInput.value;
 
         // Making an AJAX call to the app.py route with the user input
-        fetch('/api/get_response', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ query: userQuery })
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Displaying the response in the response-container
-            responseContainer.innerHTML = `<p>Here is the answer: ${data.response}</p>`;
-            responseContainer.style.display = 'block';
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            responseContainer.innerHTML = `<p>Error in fetching response</p>`;
-        });
-    });
+        fetch("/api/get_response", {
+    // ... 요청 설정 ...
+})
+.then((response) => response.json())
+.then((data) => {
+    const gpt4Response = data.response;
+    responseContainer.innerHTML = `<p><strong>GPT-4 Response:</strong> ${gpt4Response}</p>`;
+})
+.catch((error) => {
+    console.error("Error:", error);
+});
 
     // Event listener for the enter key in the input field
     document.getElementById('user-input').addEventListener('keydown', function(event) {
