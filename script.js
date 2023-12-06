@@ -10,8 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then((response) => response.json())
         .then((data) => {
-            const gpt4Response = data.response;
-            responseContainer.innerHTML = `<p><strong>GPT-4 Response:</strong> ${gpt4Response}</p>`;
+            addHTML(data);
         })
         .catch((error) => {
             console.error("Error:", error);
@@ -19,7 +18,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     })
         // Making an AJAX call to the app.py route with the user input
-        
+    function addHTML(data){
+        const gpt4Response = data.response;
+        responseContainer.innerHTML = `<p><strong>GPT-4 Response:</strong> ${gpt4Response}</p>`;
+    }
     // Event listener for the enter key in the input field
     document.getElementById('user-input').addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {
