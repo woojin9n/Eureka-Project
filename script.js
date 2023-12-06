@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
     })
         // Making an AJAX call to the app.py route with the user input
         fetch("/api/get_response", {
-    // ... 요청 설정 ...
+    userQuery = question
 })
 .then((response) => response.json())
 .then((data) => {

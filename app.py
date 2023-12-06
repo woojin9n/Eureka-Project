@@ -101,7 +101,7 @@ def index():
 @app.route('/api/get_response', methods=['POST'])
 def get_response():
     data = request.json
-    user_input = data.get('query')
+    user_input = data.get('question')
 
     message = openai.beta.threads.messages.create(
     thread_id=thread.id,
