@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     submitButton.addEventListener("click", () => {
         const userQuery = userInput.value;
-        fetch("/api/get_response", {
+        fetch("/", {
             question : userQuery
         })
         .then((response) => response.json())
