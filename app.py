@@ -73,25 +73,5 @@ def get_response():
     
     return jsonify({"response": messages})
 
-    # query_embedding = get_embeddings(user_input)
-    # context = ''
-
-    # # Search in metadata
-    # metadata_results = chroma_client.search(query_embedding, k=1, db_name='metadata_db')
-    # if metadata_results:
-    #     context = metadata_results[0]['data']
-    # else:
-    #     # Search in PDF documents if no results found in metadata
-    #     pdf_results = chroma_client.search(query_embedding, k=1, db_name='pdf_db')
-    #     if pdf_results:
-    #         context = pdf_results[0]['data']
-
-    # # Generate GPT-4 chat response
-    # if context:
-    #     gpt4_response = get_gpt4_chat_response(user_input, context)
-    #     return jsonify({"response": gpt4_response})
-    # else:
-    #     return jsonify({"response": "No relevant information found for your query."})
-
 if __name__ == '__main__':
     app.run(debug=True)
