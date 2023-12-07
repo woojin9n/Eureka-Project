@@ -75,4 +75,4 @@ if user_input:
     # to the user input before passing to the GPT model.
     
     reply = get_response(user_input)
-    st.write('Response:', print(reply))
+    st.write('Response:', reply)
