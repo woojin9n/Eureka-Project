@@ -60,7 +60,7 @@ def get_response(user_input):
     messages = openai.beta.threads.messages.list(
     thread_id=thread.id
     )
-    
+
     return messages.data[1].run_id
 
 # Streamlit UI
@@ -75,4 +75,4 @@ if user_input:
     # to the user input before passing to the GPT model.
     
     reply = get_response(user_input)
-    st.write('Response:', reply)
+    st.write('Response:', print(reply))
