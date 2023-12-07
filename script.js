@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     submitButton.addEventListener("click", () => {
         const userQuery = userInput.value;
-        fetch("/(index)", {
+        fetch("/app", {
             headers: {
                 Accept: "application / json",
                 'Content-Type': 'application/json',
