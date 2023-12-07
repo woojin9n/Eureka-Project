@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     submitButton.addEventListener("click", () => {
         const userQuery = userInput.value;
-        fetch("/", {
+        fetch("/app.py", {
             headers: {
                 Accept: "application / json",
                 'Content-Type': 'application/json',
