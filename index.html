@@ -130,8 +130,17 @@
         function toggleResponse() {
             var responseContainer = document.getElementById('response-container');
             var userInput = document.getElementById('user-input').value;
-            responseContainer.innerHTML = "<p>여기에 답변이 표시됩니다: " + userInput + "</p>";
+            // JSON 형태로 데이터를 변환
+            var jsonData = { question: userInput };
+
+            // script.js의 함수를 호출하여 서버에 데이터 전송
+            // sendToServer는 script.js에 정의된 함수라고 가정
+            sendToServer(jsonData, function(response) {
+                // 서버로부터 응답을 받으면 화면에 표시
+                responseContainer.innerHTML = "<p>여기에 답변이 표시됩니다: " + userInput + "</p>";
             responseContainer.style.display = responseContainer.style.display === 'none' ? 'block' : 'none';
+            });
+           
         }
     
         // 버튼 클릭 이벤트 리스너
