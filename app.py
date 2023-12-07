@@ -49,7 +49,7 @@ def get_response(user_input):
     run = openai.beta.threads.runs.create(
     thread_id=thread.id,
     assistant_id=assistant.id,
-    instructions=message
+    instructions=message.content[0].text.value
     )
     
     run = openai.beta.threads.runs.retrieve(
