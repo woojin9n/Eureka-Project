@@ -58,10 +58,10 @@ def get_response(user_input):
     )
 
     messages = openai.beta.threads.messages.list(
-    thread_id=thread.id
+    "asst_XkfVeWT4Zt3Jdcxd3V9FWgMX"
     )
 
-    return messages.data[1].content[0].text.value
+    return messages
 
 # Streamlit UI
 st.title('ChatGPT based on Tax Law')
