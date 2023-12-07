@@ -45,7 +45,7 @@ thread = openai.beta.threads.create()
 def index():
     return render_template('index.html')
 
-@app.route('/assistant', methods=['POST'])
+@app.route('/script', methods=['POST'])
 def get_response():
     data = request.json
     user_input = data.get('question')
