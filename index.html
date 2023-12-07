@@ -126,24 +126,25 @@
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const userInput = document.getElementById("user-input");
-            const submitButton = document.getElementById("submit-button");
-            const responseContainer = document.getElementById("response-container");
+        // 버튼 클릭 이벤트와 동일한 기능을 수행하는 함수
+        function toggleResponse() {
+            var responseContainer = document.getElementById('response-container');
+            var userInput = document.getElementById('user-input').value;
+            responseContainer.innerHTML = "<p>여기에 답변이 표시됩니다: " + userInput + "</p>";
+            responseContainer.style.display = responseContainer.style.display === 'none' ? 'block' : 'none';
+        }
     
-            submitButton.addEventListener("click", () => {
-                const userQuery = userInput.value;
-                processUserInput({ question: userQuery }); // script.js의 함수 호출
-            });
+        // 버튼 클릭 이벤트 리스너
+        document.getElementById('submit-button').addEventListener('click', toggleResponse);
     
-            document.getElementById('user-input').addEventListener('keydown', function(event) {
-                if (event.key === 'Enter') {
-                    submitButton.click();
-                }
-            });
+        // 입력란에서 엔터키 이벤트 리스너
+        document.getElementById('user-input').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                toggleResponse();
+            }
         });
     </script>
-    <script src="script.js"></script> <!-- script.js 파일 참조 -->
-
+    
+    <script src="script.js"></script>
 </body>
 </html>
