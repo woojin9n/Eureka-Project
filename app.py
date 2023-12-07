@@ -58,7 +58,7 @@ def get_response(user_input):
     )
 
     messages = openai.beta.threads.messages.list(
-    "asst_XkfVeWT4Zt3Jdcxd3V9FWgMX"
+    thread_id=thread.id
     )
 
     return messages
