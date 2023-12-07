@@ -126,28 +126,21 @@
     </div>
 
     <script>
-        // script.js 파일에 정의된 함수를 호출하여 서버에 요청을 보내는 함수
-        function sendUserInputToServer() {
-            var userInput = document.getElementById('user-input').value;
+        // 버튼 클릭 이벤트와 동일한 기능을 수행하는 함수
+        function toggleResponse() {
             var responseContainer = document.getElementById('response-container');
-
-            // JSON 형태로 데이터를 변환
-            var jsonData = { question: userInput };
-
-            // script.js의 함수를 호출하여 서버에 데이터 전송
-            // sendToServer는 script.js에 정의된 함수라고 가정
-            sendToServer(jsonData, function(response) {
-                // 서버로부터 응답을 받으면 화면에 표시
-                responseContainer.innerHTML = "<p>서버 응답: " + response + "</p>";
-                responseContainer.style.display = 'block';
-            });
+            var userInput = document.getElementById('user-input').value;
+            responseContainer.innerHTML = "<p>여기에 답변이 표시됩니다: " + userInput + "</p>";
+            responseContainer.style.display = responseContainer.style.display === 'none' ? 'block' : 'none';
         }
-
-        document.getElementById('submit-button').addEventListener('click', sendUserInputToServer);
-
+    
+        // 버튼 클릭 이벤트 리스너
+        document.getElementById('submit-button').addEventListener('click', toggleResponse);
+    
+        // 입력란에서 엔터키 이벤트 리스너
         document.getElementById('user-input').addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
-                sendUserInputToServer();
+                toggleResponse();
             }
         });
     </script>
