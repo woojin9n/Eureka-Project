@@ -1,9 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 import os
 import openai
-# import json
-# import PyPDF2
-# import chromadb
 
 app = Flask(__name__)
 
@@ -13,41 +10,6 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 # Set up directories for PDF files and metadata
 pdf_directory = "./data/"
 metadata_directory = "./metadata/"
-
-# # Custom text splitter function
-# def custom_text_splitter(text, chunk_size=1000):
-#     return [text[i:i+chunk_size] for i in range(0, len(text), chunk_size)]
-
-# # Connect to ChromaDB using Client
-# chroma_client = chromadb.Client()
-
-# # Function to index documents in ChromaDB
-# def index_documents_in_chroma(documents, client, db_name):
-#     for doc in documents:
-#         embedding = get_embeddings(doc)
-#         client.add(embedding, doc, db_name=db_name)
-
-# # Function to generate embeddings using OpenAI
-# def get_embeddings(text):
-#     response = openai.embeddings.create(
-#         model="text-embedding-ada-002",
-#         input=text
-#     )
-#     answer = response.data[0].embedding
-#     return answer
-
-# # Function to get a response from GPT-4 using OpenAI API
-# def get_gpt4_chat_response(prompt, context):
-#     response = openai.chat.completions.create(
-#         model="gpt-4",
-#         messages=[
-#             {"role": "system", "content": "You are a tax law expert AI to assist the legal profession. You provide the legal profession with the best knowledge and analyses based on the client's statement the legal profession has shared. It doesn't matter if your analysis is incomplete because it is just a reference. The legal profession will properly advise referring to your analysis as a reference. Generate response in the same language as the CLIENT ASKING."},
-#             {"role": "user", "content": f"Context: {context}\nQuestion: {prompt}"}
-#         ],
-#         max_tokens=500
-#     )    
-#     answer = response.choices[0].message.content
-#     return answer
 
 # Upload a file with an "assistants" purpose
 for filename in os.listdir(metadata_directory):
@@ -78,21 +40,6 @@ assistant = openai.beta.assistants.create(
 )
 
 thread = openai.beta.threads.create()
-
-# # Load and process documents
-# def load_and_process_documents(directory, file_extension):
-#     documents = []
-#     for filename in os.listdir(directory):
-#         if filename.endswith(file_extension):
-#             with open(os.path.join(directory, filename), 'rb') as file:
-#                 if file_extension == '.json':
-#                     json_data = json.load(file)
-#                     content = json_data['chapters']  # Adjust according to JSON structure
-#                 else:  # PDF processing
-#                     pdf_reader = PyPDF2.PdfReader(file)
-#                     content = ' '.join([page.extract_text() for page in pdf_reader.pages])
-#                 documents.extend(custom_text_splitter(content, 1000))  # Use the custom text splitter
-#     return documents
 
 @app.route('/')
 def index():
