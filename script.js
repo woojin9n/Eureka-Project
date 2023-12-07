@@ -5,12 +5,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     submitButton.addEventListener("click", () => {
         const userQuery = userInput.value;
-        fetch("/", {
+       fetch("/", {
+            method: 'POST',  // POST 요청으로 변경
             headers: {
-                Accept: "application / json",
+                'Accept': 'application/json',
                 'Content-Type': 'application/json',
-              },
-            question : userQuery
+            },
+            body: JSON.stringify({ question: userQuery })  // 입력을 JSON으로 변환하여 전송
         })
         .then((response) => response.json())
         .then((data) => {
