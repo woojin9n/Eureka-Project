@@ -60,8 +60,8 @@ def get_response(user_input):
     messages = openai.beta.threads.messages.list(
     thread_id=thread.id
     )
-
-    return messages
+    
+    return messages.data[1].run_id
 
 # Streamlit UI
 st.title('ChatGPT based on Tax Law')
