@@ -61,7 +61,7 @@ def get_response(user_input):
     thread_id=thread.id
     )
 
-    return messages
+    return messages.data[0].content
 
 # Streamlit UI
 st.title('ChatGPT based on Tax Law')
