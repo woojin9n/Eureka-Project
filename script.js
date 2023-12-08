@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log("data", data);
         })
         .catch((error) => {
-            error("Error:", error);
+            console.error("Error:", error);
         });
 
     })
