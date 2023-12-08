@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     submitButton.addEventListener("click", () => {
         const userQuery = userInput.value;
         fetch("/", {
-            methods: "POST"
+            methods: "POST",
             headers: {
                 Accept: "application/json",
                 'Content-Type': 'application/json'
