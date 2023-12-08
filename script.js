@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     submitButton.addEventListener("click", () => {
         const userQuery = userInput.value;
-        fetch("/question", {
+        fetch("/", {
             //method: "POST",
             headers: {
                 Accept: "application/json",
