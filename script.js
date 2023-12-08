@@ -15,7 +15,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 'Content-Type': 'application/json'
               },
             question : userQuery
-        }).then(function(res){alert(res);})
+        }).then(function(res){
+                  alert(res);
+                  alert(res.json());
+                  alert(json.stringfy(res.json()));
+               })
         /*
         .then((response) => response.json())
         .then((data) => {
