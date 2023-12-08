@@ -18,10 +18,13 @@ document.addEventListener("DOMContentLoaded", function () {
         }).then(function(res){
                   alert(res);
                   alert(res.body);
+                  alert(res.body.toString());
+                 /*
                   alert(json.stringfy(res.body));
                   alert(json.stringfy(res.json()));
                   alert(res.data);
                   alert(json.stringfy(res.data));
+                  */
 
             responseContainer.addHTML("aaaaaaa");
                })
