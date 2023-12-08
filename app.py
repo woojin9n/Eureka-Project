@@ -49,8 +49,7 @@ def get_response(user_input):
 
     run = openai.beta.threads.runs.create(
     thread_id=thread.id,
-    assistant_id=assistant.id,
-    instructions="Please Address the user as User."
+    assistant_id=assistant.id
     )
     
     run = openai.beta.threads.runs.retrieve(
@@ -58,12 +57,11 @@ def get_response(user_input):
     run_id=run.id
     )
 
-    run_steps = openai.beta.threads.runs.steps.list(
-        thread_id=thread.id,
-        run_id=run.id
+    messages = openai.beta.threads.messages.list(
+    thread_id=thread.id
     )
 
-    return run_steps.step_details.message_creation
+    return messages
 
 # Streamlit UI
 st.title('ChatGPT based on Tax Law')
