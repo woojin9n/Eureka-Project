@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
               },
             question : userQuery
         })
-        .then((response) => response.json())
+        .then((response) => response.json();alert(1);alret(response);)
         .then((data) => {
             addHTML(data);
             console.log("data", data);
