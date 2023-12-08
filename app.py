@@ -37,10 +37,10 @@ assistant = openai.beta.assistants.create(
     file_ids=[metafile.id,datafile.id]
     )
 
-thread = openai.beta.threads.create()
-
 # Set up Run
 def get_response(user_input):
+    thread = openai.beta.threads.create()
+
     message = openai.beta.threads.messages.create(
     thread_id=thread.id,
     role="user",
