@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     submitButton.addEventListener("click", () => {
         const userQuery = userInput.value;
         fetch("/", {
-            methods: "POST",
+            method: "POST",
             headers: {
                 Accept: "application/json",
                 'Content-Type': 'application/json'
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log("data", data);
         })
         .catch((error) => {
-            console.error("Error:", error);
+            error("Error:", error);
         });
 
     })
