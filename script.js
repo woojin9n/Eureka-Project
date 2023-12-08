@@ -4,21 +4,27 @@ document.addEventListener("DOMContentLoaded", function () {
     const responseContainer = document.getElementById("response-container");
 
     submitButton.addEventListener("click", () => {
+        
         const userQuery = userInput.value;
+        alert("userQuery=" + userQuery);
+        
         fetch("/", {
-            method: "post",
+            method: "POST",
             headers: {
-                Accept: "application/json",
+                'Accept': "application/json",
                 'Content-Type': 'application/json'
               },
             question : userQuery
-        })
+        }).then(function(res)(alert(11);)
+        /*
         .then((response) => response.json())
         .then((data) => {
             addHTML(data);
             console.log("data", data);
         })
+        */
         .catch((error) => {
+            alert(2);
             console.error("Error:", error);
         });
 
