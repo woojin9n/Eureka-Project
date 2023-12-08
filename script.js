@@ -7,17 +7,17 @@ document.addEventListener("DOMContentLoaded", function () {
         const userQuery = userInput.value;
         fetch("/", {
             headers: {
-                Accept: "text/html",
-                'Content-Type': 'text/html',
+                Accept: "application/json",
+                'Content-Type': 'application/json',
               },
             question : userQuery
         })
         .then((response) => response.json())
         .then((data) => {
             addHTML(data);
+            console.log("data", data);
         })
-        .catch((error) => {console.error("response:", response); 
-                           console.error("data:", data);
+        .catch((error) => {
             console.error("Error:", error);
         });
 
