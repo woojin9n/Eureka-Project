@@ -63,7 +63,7 @@ def get_response(user_input):
         run_id=run.id
     )
 
-    return run_steps
+    return run_steps.data[0].step_details.message_creation
 
 # Streamlit UI
 st.title('ChatGPT based on Tax Law')
