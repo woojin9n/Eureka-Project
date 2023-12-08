@@ -22,6 +22,8 @@ document.addEventListener("DOMContentLoaded", function () {
                   alert(json.stringfy(res.json()));
                   alert(res.data);
                   alert(json.stringfy(res.data));
+
+            responseContainer.addHTML("aaaaaaa");
                })
         /*
         .then((response) => response.json())
