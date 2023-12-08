@@ -57,11 +57,12 @@ def get_response(user_input):
     run_id=run.id
     )
 
-    messages = openai.beta.threads.messages.list(
-    thread_id=thread.id
+    run_steps = openai.beta.threads.runs.steps.list(
+        thread_id=thread.id,
+        run_id=run.id
     )
 
-    return messages
+    return run_steps
 
 # Streamlit UI
 st.title('ChatGPT based on Tax Law')
