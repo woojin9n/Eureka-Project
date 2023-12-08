@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const userQuery = userInput.value;
         fetch("/", {
             headers: {
-                Accept: "application / json",
+                Accept: "application/json",
                 'Content-Type': 'application/json',
               },
             question : userQuery
