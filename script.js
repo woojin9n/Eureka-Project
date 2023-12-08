@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 'Content-Type': 'application/json'
               },
             question : userQuery
-        }).then(function(res)(alert(11);)
+        }).then(function(res){alert(res);})
         /*
         .then((response) => response.json())
         .then((data) => {
