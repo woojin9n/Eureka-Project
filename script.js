@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", function () {
     submitButton.addEventListener("click", () => {
         
         const userQuery = userInput.value;
-        alert("userQuery=" + userQuery);
         
         fetch("/", {
             method: "POST",
@@ -15,28 +14,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 'Content-Type': 'application/json'
               },
             question : userQuery
-        }).then(function(res){
-                  alert(res);
-                  alert(res.body);
-                  alert(res.body.toString());
-                 /*
-                  alert(json.stringfy(res.body));
-                  alert(json.stringfy(res.json()));
-                  alert(res.data);
-                  alert(json.stringfy(res.data));
-                  */
-
-            responseContainer.addHTML("aaaaaaa");
-               })
-        /*
+        })
         .then((response) => response.json())
         .then((data) => {
             addHTML(data);
             console.log("data", data);
         })
-        */
         .catch((error) => {
-            alert(2);
             console.error("Error:", error);
         });
 
