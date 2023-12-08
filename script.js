@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
         fetch("/", {
             headers: {
                 Accept: "application/json",
-                'Content-Type': 'application/json',
+                'Content-Type': 'text/html',
               },
             question : userQuery
         })
