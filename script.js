@@ -16,7 +16,8 @@ document.addEventListener("DOMContentLoaded", function () {
         .then((data) => {
             addHTML(data);
         })
-        .catch((error) => {
+        .catch((error) => {console.error("response:", response); 
+                           console.error("data:", data);
             console.error("Error:", error);
         });
 
