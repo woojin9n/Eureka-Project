@@ -12,7 +12,8 @@ document.addEventListener("DOMContentLoaded", function () {
             method: "POST",
             headers: {
                 'Accept': "application/json",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                "Cache-Control": "no-cache, private, max-age=0"
               },
             question : userQuery
         })
