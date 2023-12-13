@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const userQuery = userInput.value;
         
         fetch("/get_response", { 
-        /* fetch("/", { */
+        /*** fetch("/", { */
             /* method: "POST",  */
             headers: {
                 'Accept': "application/json",
