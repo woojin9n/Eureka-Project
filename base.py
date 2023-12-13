@@ -54,18 +54,6 @@ def index():
     else :   
         return render_template('index.html')
 
-@app.route('/get_response/', methods=['GET','POST']) 
-def get_response_a():
-    return jsonify({"response": "aaa_a"})
-    
-@app.route('get_response', methods=['GET','POST']) 
-def get_response_b():
-    return jsonify({"response": "aaa_b"})
-    
-@app.route('./get_response', methods=['GET','POST']) 
-def get_response_c():
-    return jsonify({"response": "aaa_c"})
-    
 @app.route('/get_response', methods=['GET','POST']) 
 def get_response():
     data = request.json
