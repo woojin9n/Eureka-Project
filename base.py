@@ -51,7 +51,7 @@ def index():
         return jsonify({"response": "aaab"})
     else if request.json.get('question') is not None:        
         return jsonify({"response": "aaa"+request.json.get('question')})
-    else    
+    else :   
         return render_template('index.html')
 
 @app.route('/get_response/', methods=['GET','POST']) 
