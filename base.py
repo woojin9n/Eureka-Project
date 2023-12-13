@@ -43,6 +43,9 @@ thread = openai.beta.threads.create()
 
 @app.route('/')
 def index():
+    if request.json is not None:        
+    return jsonify({"response": "aaab"})
+    else    
     return render_template('index.html')
 
 @app.route('/get_response', methods=['POST']) 
