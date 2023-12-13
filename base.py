@@ -56,6 +56,14 @@ def index():
 def get_response_a():
     return jsonify({"response": "aaac"})
     
+@app.route('get_response', methods=['GET','POST']) 
+def get_response_a():
+    return jsonify({"response": "aaad"})
+    
+@app.route('./get_response', methods=['GET','POST']) 
+def get_response_a():
+    return jsonify({"response": "aaae"})
+    
 @app.route('/get_response', methods=['GET','POST']) 
 def get_response():
     data = request.json
