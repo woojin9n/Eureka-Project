@@ -42,11 +42,11 @@ assistant = openai.beta.assistants.create(
 thread = openai.beta.threads.create()
 
 @app.route('/', methods=['GET','POST'])
-def index():
+#def index():
 #        return render_template('index.html')
-        return render_template('qa.html')
+#        return render_template('qa.html')
 
-@app.route('/get_response', methods=['GET','POST']) 
+#@app.route('/get_response', methods=['GET','POST']) 
 def get_response():
     data = request.json
     user_input = data.get('question')
