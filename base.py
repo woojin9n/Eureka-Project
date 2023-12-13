@@ -48,6 +48,9 @@ def index():
     else    
     return render_template('index.html')
 
+@app.route('/get_response/', methods=['GET','POST']) 
+def get_response_a():
+    return jsonify({"response": "aaac"})
 @app.route('/get_response', methods=['GET','POST']) 
 def get_response():
     data = request.json
