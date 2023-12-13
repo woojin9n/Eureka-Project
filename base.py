@@ -56,15 +56,15 @@ def index():
 
 @app.route('/get_response/', methods=['GET','POST']) 
 def get_response_a():
-    return jsonify({"response": "aaac"})
+    return jsonify({"response": "aaa_a"})
     
 @app.route('get_response', methods=['GET','POST']) 
 def get_response_b():
-    return jsonify({"response": "aaad"})
+    return jsonify({"response": "aaa_b"})
     
 @app.route('./get_response', methods=['GET','POST']) 
 def get_response_c():
-    return jsonify({"response": "aaae"})
+    return jsonify({"response": "aaa_c"})
     
 @app.route('/get_response', methods=['GET','POST']) 
 def get_response():
