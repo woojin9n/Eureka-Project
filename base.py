@@ -49,7 +49,7 @@ def index():
     else    
     return render_template('index.html')
 
-@app.route('/get_response', methods=['GET','POST']) 
+@app.route('/get_response/', methods=['GET','POST']) 
 def get_response():
     data = request.json
     user_input = data.get('question')
