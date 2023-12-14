@@ -1,11 +1,12 @@
-from flask import Flask, render_template, request, jsonify
+import time
+from flask import Flask, render_template, request, jsonify, current_app
 import os
 import openai
 
 app = Flask(__name__)
 
 # Set up OpenAI API Key
-openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = "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"
 
 # Set up directories for PDF files and metadata
 pdf_directory = "./data/"
@@ -45,33 +46,66 @@ thread = openai.beta.threads.create()
 def index():
     return render_template('index.html')
 
-@app.route('/get_response', methods=['GET','POST']) 
+# js에서 get_response로 json객체 호출
+@app.route('/get_response/', methods=['GET','POST']) 
 def get_response():
-    data = request.json
+    #  current_app.logger.info("INFO 레벨로 출력")
+    data = request.get_json(silent=True)
     user_input = data.get('question')
+    current_app.logger.info("user_input="+user_input)
 
+    # message 객체 생성
     message = openai.beta.threads.messages.create(
     thread_id=thread.id,
     role="user",
     content=user_input
     )
 
+    # run 객체 생성
+    current_app.logger.info("message=[]")
     run = openai.beta.threads.runs.create(
     thread_id=thread.id,
     assistant_id=assistant.id,
-    instructions=message
+    instructions="2-3team creative reserved!!!"
     )
-    
+
+    """
+    current_app.logger.info("222")
     run = openai.beta.threads.runs.retrieve(
     thread_id=thread.id,
     run_id=run.id
     )
+    """
 
+    # 응답이 올 때 까지 대기    
+    while True:
+        if run.status == "completed":
+            break
+        run = openai.beta.threads.runs.retrieve(
+            thread_id=thread.id, 
+            run_id=run.id
+        )
+        # print(run)
+        time.sleep(1)
+
+    # 응답이 완료되면 messages를 받아온다
     messages = openai.beta.threads.messages.list(
     thread_id=thread.id
     )
-    
-    return jsonify({"response": messages})
+
+
+    print(messages)
+    #print(messages.data[0].content[0].text.value)
+
+    """
+    # 각 메시지에서 'value' 추출 및 출력
+    for msg in messages.data:
+        for content in msg.content:
+            if content.type == 'text':
+                print(content.text.value)
+    """
+    # list객체라 0번째 것만 받아옴
+    return jsonify({"response": messages.data[0].content[0].text.value})
 
 if __name__ == '__main__':
     app.run(debug=True)
